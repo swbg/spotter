@@ -10,6 +10,9 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import org.controlsfx.control.RangeSlider?>
+
+<!-- ?import org.controlsfx.control.RangeSlider?-->
 
 <BorderPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.FXController">
    <center>
@@ -17,12 +20,18 @@
          <children>
             <SplitPane dividerPositions="0.5" layoutX="220.0" layoutY="100.0" orientation="VERTICAL" prefHeight="800.0" prefWidth="1024.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0">
-                     <children>
-                        <ImageView fx:id="displayedImage" fitHeight="150.0" fitWidth="200.0" layoutX="0" layoutY="0" pickOnBounds="true" />
-                     </children>
-                  </AnchorPane>
-                <AnchorPane minHeight="0.0" minWidth="0.0">
+                  <BorderPane>
+                     <center>
+                      <AnchorPane fx:id="anchorPane" minHeight="0.0" minWidth="0.0">
+                           <children>
+                              <RangeSlider layoutX="254.0" layoutY="6.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fx:id="x_range" />
+                              <RangeSlider fx:id="y_range" orientation="VERTICAL" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="16.0" />
+                              <ImageView fx:id="displayedImage" fitHeight="150.0" fitWidth="200.0" layoutX="411.0" layoutY="170.0" pickOnBounds="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="15.0" />
+                           </children>
+                        </AnchorPane>
+                     </center>
+                  </BorderPane>
+                <AnchorPane maxHeight="300.0" minHeight="0.0" minWidth="0.0">
                      <children>
                         <Button fx:id="autoDetect" layoutX="512.0" layoutY="155.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="61.0" text="Auto" />
                         <Label layoutX="39.0" layoutY="28.0" text="rows" />
@@ -32,13 +41,14 @@
                         <Label layoutX="38.0" layoutY="160.0" text="y_dist" />
                         <Label layoutX="343.0" layoutY="28.0" text="x_offset" />
                         <Label layoutX="343.0" layoutY="73.0" text="y_offset" />
-                        <Spinner fx:id="rows" editable="true" initialValue="5" layoutX="84.0" layoutY="23.0" max="10" min="1" />
-                        <Spinner fx:id="columns" editable="true" initialValue="10" layoutX="84.0" layoutY="55.0" max="10" min="1" />
-                        <Spinner fx:id="size" editable="true" initialValue="10" layoutX="84.0" layoutY="91.0" max="1000" min="1" />
-                        <Spinner editable="true" initialValue="20" layoutX="84.0" layoutY="127.0" max="1000" min="0" fx:id="x_dist" />
+                        <Spinner fx:id="rows" editable="true" initialValue="5" layoutX="84.0" layoutY="23.0" max="10000" min="1" />
+                        <Spinner fx:id="cols" editable="true" initialValue="10" layoutX="84.0" layoutY="55.0" max="10000" min="1" />
+                        <Spinner fx:id="size" editable="true" initialValue="10" layoutX="84.0" layoutY="91.0" max="10000" min="1" />
+                        <Spinner editable="true" initialValue="20" layoutX="84.0" layoutY="127.0" max="10000" min="0" fx:id="x_dist" />
                         <Spinner fx:id="y_dist" editable="true" initialValue="20" layoutX="84.0" layoutY="155.0" max="10000" min="0" />
-                        <Spinner editable="true" initialValue="20" layoutX="413.0" layoutY="23.0" max="100" min="1" fx:id="x_offset" />
-                        <Spinner fx:id="y_offset" editable="true" initialValue="20" layoutX="413.0" layoutY="63.0" max="1000" min="0" />
+                        <Spinner editable="true" initialValue="20" layoutX="413.0" layoutY="23.0" max="10000" min="1" fx:id="x_offset" />
+                        <Spinner fx:id="y_offset" editable="true" initialValue="20" layoutX="413.0" layoutY="63.0" max="10000" min="0" />
+                        
                      </children>
                   </AnchorPane>
               </items>

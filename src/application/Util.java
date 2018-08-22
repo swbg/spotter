@@ -41,38 +41,14 @@ public class Util {
 			// get image dimensions
 		    int cols = Integer.parseInt(reader.readLine());
 		    int rows = Integer.parseInt(reader.readLine());
-		    
-		    // mat = new Mat(rows, cols, CvType.CV_32SC3);
-		    // mat = new Mat(rows, cols, CvType.CV_16UC3);
 		    mat = new Mat(rows, cols, CvType.CV_16UC1);
 		    
 		    // skip empty line
 		    reader.readLine();
 		    
-		    int max = 0;
-		    
-//		    for (int i = 0; i < rows; i++) {
-//		    	for (int j = 0; j < cols; j++) {
-//		    		int val = Integer.parseInt(reader.readLine());
-//		    		if (val > max) {
-//		    			max = val;
-//		    		}
-//		    		val = (int)(Math.log(val)*50)-50;
-//		    		mat.put(i, j, new int[]{val/10, val/5, val});
-//		    	}
-//		    }
-//		    for (int i = 0; i < rows; i++) {
-//		    	for (int j = 0; j < cols; j++) {
-//		    		short val = (short)(Integer.parseInt(reader.readLine())%65000);
-//		    		mat.put(i, j, new short[]{val, val, val});
-//		    	}
-//		    }
-		    for (int i = 0; i < rows; i++) {
-		    	for (int j = 0; j < cols; j++) {
-		    		short val = (short)(Integer.parseInt(reader.readLine())%65000);
-		    		if (val > max) {
-		    			max = val;
-		    		}
+		    for (int i = rows-1; i >= 0; i--) {
+		    	for (int j = cols-1; j >= 0; j--) {
+		    		short val = (short)(Integer.parseInt(reader.readLine()));
 		    		mat.put(i, j, new short[]{val});
 		    	}
 		    }
@@ -90,19 +66,8 @@ public class Util {
 		    }
 		}
 		
-//		Mat mat2 = new Mat(mat.rows(), mat.cols(), CvType.CV_8UC1);
-//		
-//		Imgproc.cvtColor(mat, mat2, Imgproc.COLOR_BGR2GRAY, 1);
-//		
-//		System.out.println(mat2.channels());
-//		mat2.convertTo(mat2, CvType.CV_8UC1);
-//		Imgproc.equalizeHist(mat2, mat2);
-//		return mat2;
-		
-		// mat.convertTo(mat, CvType.CV_8UC1);
-		// Imgproc.equalizeHist(mat, mat);
-		
 		Core.normalize(mat, mat, 0, 255, Core.NORM_MINMAX);
+		Imgproc.cvtColor(mat, mat, Imgproc.COLOR_GRAY2RGB);
 		return mat;
 	}
 
