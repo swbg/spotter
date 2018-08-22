@@ -74,30 +74,36 @@ public class FXController {
 		for (Spinner<Integer> s : new Spinner[]{rows, columns, size, x_dist, y_dist, x_offset, y_offset}) {
 			s.getEditor().textProperty().addListener(new SpinnerListener(s));
 		}
+		drawGrid();
 	}
 	
 	@FXML
 	protected void drawGrid() {
+		String path = "/home/stefan/Documents/eclipse/spotter/data/Legn Pneum 7_CK_20171213_66_5_2017.12.13-10.38.44.txt";
+		
 		System.out.println("drawGrid");
 		int width = 800;
 		int height = 400;
 		
-		Mat mat = new Mat(height, width, CvType.CV_8UC3, new Scalar(205, 205, 225));
+		// Mat mat = new Mat(height, width, CvType.CV_8UC3, new Scalar(205, 205, 225));
 		
-		for (int i = 0; i < rows.getValue(); i++) {
-			for (int j = 0; j < columns.getValue(); j++) {
-				Imgproc.circle(mat, new Point(
-						x_offset.getValue() + size.getValue() + i*x_dist.getValue(),
-						y_offset.getValue() + size.getValue() + j*y_dist.getValue()),
-						size.getValue(),
-						new Scalar(255, 0, 0),
-						2);
-			}	
-		}
+		Mat mat = Util.fromFile(path);
 		
-		displayedImage.setImage(mat2img(mat));
-		displayedImage.setFitWidth(width);
-		displayedImage.setFitHeight(height);
+//		for (int i = 0; i < rows.getValue(); i++) {
+//			for (int j = 0; j < columns.getValue(); j++) {
+//				Imgproc.circle(mat, new Point(
+//						x_offset.getValue() + size.getValue() + j*x_dist.getValue(),
+//						y_offset.getValue() + size.getValue() + i*y_dist.getValue()),
+//						size.getValue(),
+//						new Scalar(255, 0, 0),
+//						2);
+//			}	
+//		}
+		
+		displayedImage.setImage(Util.toImage(mat));
+		displayedImage.setFitWidth(mat.cols());
+		displayedImage.setFitHeight(mat.rows());
+		System.out.println("done");
 	}
 	
 	@FXML
@@ -108,13 +114,6 @@ public class FXController {
 	@FXML
 	protected void updateColumns() {
 		System.out.println("updateColumns");
-	}
-	
-	// https://stackoverflow.com/a/33605064
-	private Image mat2img(Mat mat) {
-		MatOfByte byteMat = new MatOfByte();
-		Imgcodecs.imencode(".bmp", mat, byteMat);
-		return new Image(new ByteArrayInputStream(byteMat.toArray()));
 	}
 	
 }

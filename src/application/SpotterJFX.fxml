@@ -15,7 +15,7 @@
    <center>
       <AnchorPane>
          <children>
-            <SplitPane dividerPositions="0.5" layoutX="220.0" layoutY="100.0" orientation="VERTICAL" prefHeight="600.0" prefWidth="800.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <SplitPane dividerPositions="0.5" layoutX="220.0" layoutY="100.0" orientation="VERTICAL" prefHeight="800.0" prefWidth="1024.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
               <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0">
                      <children>
@@ -32,11 +32,11 @@
                         <Label layoutX="38.0" layoutY="160.0" text="y_dist" />
                         <Label layoutX="343.0" layoutY="28.0" text="x_offset" />
                         <Label layoutX="343.0" layoutY="73.0" text="y_offset" />
-                        <Spinner fx:id="rows" editable="true" initialValue="3" layoutX="84.0" layoutY="23.0" max="10" min="1" />
-                        <Spinner fx:id="columns" editable="true" initialValue="3" layoutX="84.0" layoutY="55.0" max="10" min="1" />
-                        <Spinner fx:id="size" editable="true" initialValue="60" layoutX="84.0" layoutY="91.0" max="1000" min="1" />
-                        <Spinner editable="true" initialValue="200" layoutX="84.0" layoutY="127.0" max="1000" min="0" fx:id="x_dist" />
-                        <Spinner fx:id="y_dist" editable="true" initialValue="200" layoutX="84.0" layoutY="155.0" max="10000" min="0" />
+                        <Spinner fx:id="rows" editable="true" initialValue="5" layoutX="84.0" layoutY="23.0" max="10" min="1" />
+                        <Spinner fx:id="columns" editable="true" initialValue="10" layoutX="84.0" layoutY="55.0" max="10" min="1" />
+                        <Spinner fx:id="size" editable="true" initialValue="10" layoutX="84.0" layoutY="91.0" max="1000" min="1" />
+                        <Spinner editable="true" initialValue="20" layoutX="84.0" layoutY="127.0" max="1000" min="0" fx:id="x_dist" />
+                        <Spinner fx:id="y_dist" editable="true" initialValue="20" layoutX="84.0" layoutY="155.0" max="10000" min="0" />
                         <Spinner editable="true" initialValue="20" layoutX="413.0" layoutY="23.0" max="100" min="1" fx:id="x_offset" />
                         <Spinner fx:id="y_offset" editable="true" initialValue="20" layoutX="413.0" layoutY="63.0" max="1000" min="0" />
                      </children>
