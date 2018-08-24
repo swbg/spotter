@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -14,62 +19,21 @@
 
 <!-- ?import org.controlsfx.control.RangeSlider?-->
 
-<BorderPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.FXController">
-   <center>
-      <AnchorPane>
-         <children>
-            <SplitPane dividerPositions="0.5" layoutX="220.0" layoutY="100.0" orientation="VERTICAL" prefHeight="800.0" prefWidth="1024.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-              <items>
-                  <BorderPane>
-                     <center>
-                      <AnchorPane fx:id="anchorPane" minHeight="0.0" minWidth="0.0">
-                           <children>
-                              <RangeSlider layoutX="254.0" layoutY="6.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fx:id="x_range" />
-                              <RangeSlider fx:id="y_range" orientation="VERTICAL" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="16.0" />
-                              <ImageView fx:id="displayedImage" fitHeight="150.0" fitWidth="200.0" layoutX="411.0" layoutY="170.0" pickOnBounds="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="15.0" />
-                           </children>
-                        </AnchorPane>
-                     </center>
-                  </BorderPane>
-                <AnchorPane maxHeight="300.0" minHeight="0.0" minWidth="0.0">
-                     <children>
-                        <Button fx:id="autoDetect" layoutX="512.0" layoutY="155.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="61.0" text="Auto" />
-                        <Label layoutX="39.0" layoutY="28.0" text="rows" />
-                        <Label layoutX="14.0" layoutY="60.0" text="columns" />
-                        <Label layoutX="42.0" layoutY="96.0" text="size" />
-                        <Label layoutX="37.0" layoutY="132.0" text="x_dist" />
-                        <Label layoutX="38.0" layoutY="160.0" text="y_dist" />
-                        <Label layoutX="343.0" layoutY="28.0" text="x_offset" />
-                        <Label layoutX="343.0" layoutY="73.0" text="y_offset" />
-                        <Spinner fx:id="rows" editable="true" initialValue="5" layoutX="84.0" layoutY="23.0" max="10000" min="1" />
-                        <Spinner fx:id="cols" editable="true" initialValue="10" layoutX="84.0" layoutY="55.0" max="10000" min="1" />
-                        <Spinner fx:id="size" editable="true" initialValue="10" layoutX="84.0" layoutY="91.0" max="10000" min="1" />
-                        <Spinner editable="true" initialValue="20" layoutX="84.0" layoutY="127.0" max="10000" min="0" fx:id="x_dist" />
-                        <Spinner fx:id="y_dist" editable="true" initialValue="20" layoutX="84.0" layoutY="155.0" max="10000" min="0" />
-                        <Spinner editable="true" initialValue="20" layoutX="413.0" layoutY="23.0" max="10000" min="1" fx:id="x_offset" />
-                        <Spinner fx:id="y_offset" editable="true" initialValue="20" layoutX="413.0" layoutY="63.0" max="10000" min="0" />
-                        
-                     </children>
-                  </AnchorPane>
-              </items>
-            </SplitPane>
-         </children>
-      </AnchorPane>
-   </center>
+<BorderPane prefHeight="800.0" prefWidth="1280.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="application.FXController">
    <top>
       <MenuBar BorderPane.alignment="CENTER">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
+              <MenuItem mnemonicParsing="false" onAction="#openFiles" text="Open..." />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+              <MenuItem mnemonicParsing="false" onAction="#closeFile" text="Close current file" />
+              <MenuItem mnemonicParsing="false" onAction="#closeAllFiles" text="Close all files" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+              <MenuItem mnemonicParsing="false" onAction="#quitProgram" text="Quit" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Help">
+          <Menu mnemonicParsing="false" text="Help" onAction="#showAbout">
             <items>
               <MenuItem mnemonicParsing="false" text="About" />
             </items>
@@ -77,4 +41,59 @@
         </menus>
       </MenuBar>
    </top>
+   <center>
+      <SplitPane dividerPositions="0.2" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <ListView fx:id="openFiles" onMousePressed="#selectItem" prefHeight="769.0" prefWidth="234.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+               <children>
+                  <SplitPane dividerPositions="0.7" orientation="VERTICAL" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <items>
+                        <BorderPane>
+                           <center>
+                            <AnchorPane fx:id="anchorPane" minHeight="0.0" minWidth="0.0">
+                                 <children>
+                                    <RangeSlider layoutX="254.0" layoutY="6.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fx:id="x_range" />
+                                    <RangeSlider fx:id="y_range" orientation="VERTICAL" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="16.0" />
+                                    <ImageView fx:id="displayedImage" fitHeight="150.0" fitWidth="200.0" layoutX="411.0" layoutY="170.0" pickOnBounds="true" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="15.0" />
+                                 </children>
+                              </AnchorPane>
+                           </center>
+                           <left>
+                              <Button fx:id="prev" maxHeight="32000.0" mnemonicParsing="false" onAction="#decrementIndex" text=" ◁ " BorderPane.alignment="CENTER_LEFT" />
+                           </left>
+                           <right>
+                              <Button fx:id="next" maxHeight="32000.0" mnemonicParsing="false" onAction="#incrementIndex" text=" ▷ " BorderPane.alignment="CENTER_RIGHT" />
+                           </right>
+                        </BorderPane>
+                      <AnchorPane maxHeight="300.0" minHeight="0.0" minWidth="0.0">
+                           <children>
+                              <Button layoutX="261.0" onAction="#autoDetect" layoutY="105.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="80.0" text="Auto" />
+                              <Label alignment="CENTER_RIGHT" layoutX="25.0" layoutY="70.0" prefWidth="61.0" text="rows" />
+                              <Label alignment="CENTER_RIGHT" layoutX="25.0" layoutY="110.0" prefWidth="61.0" text="columns" />
+                              <Label alignment="CENTER_RIGHT" layoutX="25.0" layoutY="150.0" prefWidth="61.0" text="size" />
+                              <Spinner fx:id="rows" editable="true" initialValue="5" layoutX="100.0" layoutY="65.0" max="10000" min="1" prefHeight="26.0" prefWidth="100.0" />
+                              <Spinner fx:id="cols" editable="true" initialValue="10" layoutX="100.0" layoutY="105.0" max="10000" min="1" prefHeight="26.0" prefWidth="100.0" />
+                              <Spinner fx:id="size" editable="true" initialValue="20" layoutX="100.0" layoutY="145.0" max="10000" min="1" prefHeight="26.0" prefWidth="100.0" />
+                              <Button layoutX="261.0" layoutY="145.0" mnemonicParsing="false" onAction="#analyzeMatrix" prefHeight="26.0" prefWidth="80.0" text="Analyze" />
+                              <TextField fx:id="filename" layoutX="100.0" layoutY="25.0" prefHeight="26.0" prefWidth="600.0" />
+                              <CheckBox fx:id="save" layoutX="261.0" layoutY="65.0" mnemonicParsing="false" onAction="#saveConfig" prefHeight="26.0" text="Save" />
+                              <Label alignment="CENTER_RIGHT" layoutX="25.0" layoutY="30.0" prefWidth="61.0" text="file name" />
+                              <Separator layoutY="192.0" prefHeight="0.0" prefWidth="32000.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                              <Label fx:id="notificationBar" layoutX="25.0" layoutY="194.0" text="" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" />
+                              <TextField fx:id="mask" layoutX="475.0" layoutY="145.0" prefWidth="100.0" text="0.15" />
+                              <Label alignment="CENTER_RIGHT" layoutX="400.0" layoutY="150.0" prefWidth="61.0" text="mask" />
+                           </children>
+                        </AnchorPane>
+                    </items>
+                  </SplitPane>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </center>
 </BorderPane>
