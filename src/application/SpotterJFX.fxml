@@ -33,9 +33,15 @@
               <MenuItem mnemonicParsing="false" onAction="#quitProgram" text="Quit" />
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Help" onAction="#showAbout">
+          <Menu mnemonicParsing="false" text="Edit">
+          	<items>
+              <MenuItem mnemonicParsing="false" onAction="#autoAll" text="Auto all" />
+              <MenuItem mnemonicParsing="false" onAction="#analyzeAll" text="Analyze all" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Help">
             <items>
-              <MenuItem mnemonicParsing="false" text="About" />
+              <MenuItem mnemonicParsing="false" onAction="#showAbout" text="About" />
             </items>
           </Menu>
         </menus>
@@ -49,13 +55,13 @@
                   <ListView fx:id="openFiles" onMousePressed="#selectItem" prefHeight="769.0" prefWidth="234.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" >
                <children>
                   <SplitPane dividerPositions="0.7" orientation="VERTICAL" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <items>
                         <BorderPane>
                            <center>
-                            <AnchorPane fx:id="anchorPane" minHeight="0.0" minWidth="0.0">
+                            <AnchorPane fx:id="anchorPane" minHeight="0.0" minWidth="0.0" >
                                  <children>
                                     <RangeSlider layoutX="254.0" layoutY="6.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fx:id="x_range" />
                                     <RangeSlider fx:id="y_range" orientation="VERTICAL" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="16.0" />
@@ -70,23 +76,24 @@
                               <Button fx:id="next" maxHeight="32000.0" mnemonicParsing="false" onAction="#incrementIndex" text=" ▷ " BorderPane.alignment="CENTER_RIGHT" />
                            </right>
                         </BorderPane>
-                      <AnchorPane maxHeight="300.0" minHeight="0.0" minWidth="0.0">
+                      <AnchorPane maxHeight="183.0" minHeight="0.0" minWidth="0.0" >
                            <children>
-                              <Button layoutX="261.0" onAction="#autoDetect" layoutY="105.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="80.0" text="Auto" />
+                              <Button layoutX="450.0" layoutY="65.0" mnemonicParsing="false" onAction="#autoDetect" prefHeight="26.0" prefWidth="100.0" text="Auto" />
                               <Label alignment="CENTER_RIGHT" layoutX="25.0" layoutY="70.0" prefWidth="61.0" text="rows" />
                               <Label alignment="CENTER_RIGHT" layoutX="25.0" layoutY="110.0" prefWidth="61.0" text="columns" />
-                              <Label alignment="CENTER_RIGHT" layoutX="25.0" layoutY="150.0" prefWidth="61.0" text="size" />
+                              <Label alignment="CENTER_RIGHT" layoutX="225.0" layoutY="70.0" prefWidth="61.0" text="size" />
                               <Spinner fx:id="rows" editable="true" initialValue="5" layoutX="100.0" layoutY="65.0" max="10000" min="1" prefHeight="26.0" prefWidth="100.0" />
                               <Spinner fx:id="cols" editable="true" initialValue="10" layoutX="100.0" layoutY="105.0" max="10000" min="1" prefHeight="26.0" prefWidth="100.0" />
-                              <Spinner fx:id="size" editable="true" initialValue="20" layoutX="100.0" layoutY="145.0" max="10000" min="1" prefHeight="26.0" prefWidth="100.0" />
-                              <Button layoutX="261.0" layoutY="145.0" mnemonicParsing="false" onAction="#analyzeMatrix" prefHeight="26.0" prefWidth="80.0" text="Analyze" />
+                              <Spinner fx:id="size" editable="true" initialValue="20" layoutX="300.0" layoutY="65.0" max="10000" min="1" prefHeight="26.0" prefWidth="100.0" />
+                              <Button layoutX="600.0" layoutY="65.0" mnemonicParsing="false" onAction="#analyzeMatrix" prefHeight="26.0" prefWidth="100.0" text="Analyze" />
                               <TextField fx:id="filename" layoutX="100.0" layoutY="25.0" prefHeight="26.0" prefWidth="600.0" />
-                              <CheckBox fx:id="save" layoutX="261.0" layoutY="65.0" mnemonicParsing="false" onAction="#saveConfig" prefHeight="26.0" text="Save" />
+                              <CheckBox fx:id="save" layoutX="450.0" layoutY="105.0" mnemonicParsing="false" onAction="#saveConfig" prefHeight="26.0" prefWidth="100.0" text="Save" />
                               <Label alignment="CENTER_RIGHT" layoutX="25.0" layoutY="30.0" prefWidth="61.0" text="file name" />
                               <Separator layoutY="192.0" prefHeight="0.0" prefWidth="32000.0" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
                               <Label fx:id="notificationBar" layoutX="25.0" layoutY="194.0" text="" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" />
-                              <TextField fx:id="mask" layoutX="475.0" layoutY="145.0" prefWidth="100.0" text="0.15" />
-                              <Label alignment="CENTER_RIGHT" layoutX="400.0" layoutY="150.0" prefWidth="61.0" text="mask" />
+                              <TextField fx:id="mask" layoutX="300.0" layoutY="105.0" prefWidth="100.0" text="0.15" />
+                              <Label alignment="CENTER_RIGHT" layoutX="225.0" layoutY="110.0" prefWidth="61.0" text="mask" />
+                              <Button layoutX="600.0" layoutY="105.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" text="Analyze &amp; Next" onAction="#analyzeAndNext" />
                            </children>
                         </AnchorPane>
                     </items>

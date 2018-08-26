@@ -401,6 +401,28 @@ public class FXController {
 		updateView();
 	}
 	
+	@FXML
+	protected void autoAll() {
+		for (Config c : configs) {
+			c.autoDetect();
+		}
+		getConfig().autoDetect();
+		updateView();
+	}
+	
+	@FXML
+	protected void analyzeAll() {
+		for (Config c : configs) {
+			c.analyze();
+		}
+	}
+	
+	@FXML
+	protected void analyzeAndNext() {
+		analyzeMatrix();
+		incrementIndex();
+	}
+	
 	public void setStage(Window stage) {
 		this.stage = stage;
 	}

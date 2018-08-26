@@ -144,91 +144,7 @@ public class Config {
 		Imgproc.erode(tmp, tmp, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(2, 2)));
 		Imgproc.dilate(tmp, tmp, Imgproc.getStructuringElement(Imgproc.MORPH_RECT, new Size(6, 6)));
 		
-		// find contours
-		List<MatOfPoint> contours = new ArrayList<>();
-		Mat hierarchy = new Mat();
 		tmp.convertTo(tmp, CvType.CV_8UC1);
-		
-		
-//		Imgproc.findContours(tmp, contours, hierarchy, Imgproc.RETR_CCOMP, Imgproc.CHAIN_APPROX_SIMPLE);
-//		
-//		tmp = new Mat(tmp.rows(), tmp.cols(), CvType.CV_8UC1, new Scalar(0, 0, 0));
-//		if (hierarchy.size().height > 0 && hierarchy.size().width > 0) {
-//			for (int idx = 0; idx >= 0; idx = (int) hierarchy.get(0, idx)[0])
-//		        {
-//		                Imgproc.drawContours(tmp, contours, idx, new Scalar(255, 255, 255));
-//		        }
-//		}
-		
-//		Mat hor = new Mat();
-//		Mat ver = new Mat();
-//		Core.reduce(tmp, hor, 0, Core.REDUCE_MAX);
-//		Core.reduce(tmp, ver, 1, Core.REDUCE_MAX);
-//		
-//		ArrayList<Integer> transitions = new ArrayList<>();
-//		ArrayList<Double> centers = new ArrayList<>();
-//		
-//		double width = 0;
-//		
-//		// identify first, last and number of blobs in one dimension
-//		// identify median of distance between start of blobs
-//		
-//		boolean white = false;
-//		
-//		// identify transitions from black to white and vice versa
-//		for (int i = 0; i < hor.cols(); i++) {
-//			// current pixel is white and previous one was black
-//			if (hor.get(0, i)[0] > 0 && !white) {
-//				white = true;
-//				transitions.add(i);
-//			}
-//			// current pixel is black and previous one was white
-//			else if (hor.get(0, i)[0] == 0 && white) {
-//				white = false;
-//				transitions.add(i);
-//			}
-//		}
-//		// just to prevent exceptions
-//		if (transitions.size() % 2 != 0) {
-//			transitions.add(hor.cols()-1);
-//			System.out.println("Auto detection failed.");
-//		}
-//		
-//		// remove transitions that are less than three pixels apart
-//		for (int i = 0; i < transitions.size()-1; i++) {
-//			if (transitions.get(i+1) - transitions.get(i) <= 3) {
-//				transitions.remove(i);
-//				transitions.remove(i);
-//			}
-//		}
-//		
-//		// calculate centers of blobs and average size of blobs
-//		for (int i = 0; i < transitions.size()-1; i+=2) {
-//			centers.add((transitions.get(i+1)+transitions.get(i))/2.0);
-//			width += transitions.get(i+1) - transitions.get(i);
-//		}
-//		
-//		// calculate median distances
-//		ArrayList<Double> dist = new ArrayList<>();
-//		for (int i = 0; i < centers.size()-1; i++) {
-//			dist.add(centers.get(i+1) - centers.get(i));
-//		}
-//		// just to prevent exceptions
-//		if (dist.size() == 0) {
-//			dist.add(5.0);
-//			System.out.println("Auto detection failed.");
-//		}
-//		Collections.sort(dist);
-//		double med_dist = dist.get(dist.size()/2);
-//		
-//		// this is just temporary, should use median of size to calculate number of rows/cols
-//		cols = (int) Math.round((centers.get(centers.size()-1) - centers.get(0))/med_dist) + 1;
-//		size = (int) Math.round((width /= cols)*1.1);
-//		
-//		x_lowValue = centers.get(0)/(double)x;
-//		x_highValue = centers.get(centers.size()-1)/(double)x;
-//		
-//		System.out.println((int) Math.round((width /= rows)*1.1));
 		
 		double size_est = setAutoValues(true, tmp);
 		size_est += setAutoValues(false, tmp);
@@ -236,9 +152,7 @@ public class Config {
 		
 		updateControls();
 		update();
-		controller.drawGrid();
-		
-		// mat = tmp;
+		save();
 	}
 	
 	private double setAutoValues(boolean horizontal, Mat tmp) {
