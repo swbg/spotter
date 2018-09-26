@@ -3,13 +3,10 @@ package application;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import org.opencv.core.Core;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
@@ -23,14 +20,26 @@ public class Config {
 		x_highValue, x_lowValue, y_highValue, y_lowValue, maskThreshold;
 	private boolean saved, fixed;
 	private Analysis analysis;
+	
+	public double fractionBrightestPixels;
+	public int minBrightestPixels;
+	
+	// first dimension corresponds to type of antibody
+	public boolean[][] masked;
 
-	public Config(Mat mat, FXController controller, File file) {
+	public Config(Mat mat, FXController controller, File file, Prop prop) {
 		this.mat = mat;
 		this.controller = controller;
 		this.file = file;
 		this.x = mat.cols();
 		this.y = mat.rows();
+		this.analysis = new Analysis(this);
+		this.masked = new boolean[mat.cols()][mat.rows()];
 		saved = false;
+		
+		fractionBrightestPixels = prop.fractionBrightestPixels;
+		minBrightestPixels = prop.minBrightestPixels;
+		
 		update();
 	}
 	
@@ -41,6 +50,9 @@ public class Config {
 	public void update() {
 		if (fixed) {
 			return;
+		}
+		if (rows != controller.rows.getValue() || cols != controller.cols.getValue()) {
+			masked = new boolean[controller.cols.getValue()][controller.rows.getValue()];
 		}
 		rows = controller.rows.getValue();
 		cols = controller.cols.getValue();
@@ -96,26 +108,36 @@ public class Config {
 	}
 	
 	public void analyze() {
-		analysis = new Analysis(this);
+		analysis.performAnalysis(false);
+	}
+	
+	public void toggleMask(int x, int y) {
+		if (x < cols && y < rows) {
+			masked[x][y] = !masked[x][y];
+		}
 	}
 	
 	public void printAnalysis() {
-		analysis = new Analysis(this);
+		analysis.performAnalysis(false);
 		System.out.println(analysis);
 	}
 	
 	public void writeAnalysis() {
-		analysis = new Analysis(this);
+		analysis.performAnalysis(false);
 		analysis.toTSV(file.getAbsolutePath() + "_result.csv");
 		controller.setNotification("Wrote analysis to " + file.getAbsolutePath() + "_result.csv.");
 	}
 	
-	public void deleteAnalysis() {
-		if (analysis != null) {
-			controller.setNotification("Removed previously saved analysis.");
-		}
-		analysis = null;
+	public void resetMask() {
+		masked = new boolean[mat.cols()][mat.rows()];
 	}
+	
+//	public void deleteAnalysis() {
+//		if (analysis != null) {
+//			controller.setNotification("Removed previously saved analysis.");
+//		}
+//		analysis = null;
+//	}
 	
 	public Analysis getAnalysis() {
 		return analysis;
@@ -132,6 +154,20 @@ public class Config {
 	@Override
 	public String toString() {
 		return file.getName();
+	}
+	
+	public int[] getClickedSpot(double x, double y) {
+		x = x - x_lower + x_dist/2;
+		y = y - y_upper + y_dist/2;
+		
+		int x_index = (int)Math.floor(x / x_dist);
+		int y_index = (int)Math.floor(y / y_dist);
+		
+		if (x_index >= cols || x_index < 0 || y_index >= rows || y_index < 0) {
+			return null;
+		}
+		
+		return new int[] {x_index, y_index};
 	}
 	
 	public void autoDetect() {
@@ -152,6 +188,13 @@ public class Config {
 		
 		updateControls();
 		update();
+		
+		analysis.calculateSpots();
+		analysis.autoMask();
+		
+		System.out.println("-- " + cols + " " + rows);
+		System.out.println(".. " + masked.length + " " + masked[0].length);
+		
 		save();
 	}
 	
@@ -221,6 +264,12 @@ public class Config {
 		}
 		Collections.sort(dist);
 		double med_dist = dist.get(dist.size()/2);
+		
+		if (centers.size() < 2) {
+			System.out.println("Error auto");
+			centers.add(5.0);
+			centers.add(10.0);
+		}
 		
 		if (horizontal) {
 			cols = (int) Math.round((centers.get(centers.size()-1) - centers.get(0))/med_dist) + 1;

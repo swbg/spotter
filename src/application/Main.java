@@ -19,6 +19,7 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Spotter");
+        // primaryStage.setMaximized(true);
         
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 

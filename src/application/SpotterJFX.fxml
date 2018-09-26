@@ -9,6 +9,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextField?>
@@ -48,20 +49,20 @@
       </MenuBar>
    </top>
    <center>
-      <SplitPane dividerPositions="0.2" prefHeight="160.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <SplitPane dividerPositions="0.1" prefWidth="200.0" BorderPane.alignment="CENTER">
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
                   <ListView fx:id="openFiles" onMousePressed="#selectItem" prefHeight="769.0" prefWidth="234.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                </children>
             </AnchorPane>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" >
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                <children>
-                  <SplitPane dividerPositions="0.7" orientation="VERTICAL" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <SplitPane dividerPositions="0.8" orientation="VERTICAL" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                     <items>
                         <BorderPane>
                            <center>
-                            <AnchorPane fx:id="anchorPane" minHeight="0.0" minWidth="0.0" >
+                            <AnchorPane fx:id="anchorPane" minHeight="0.0" minWidth="0.0">
                                  <children>
                                     <RangeSlider layoutX="254.0" layoutY="6.0" AnchorPane.leftAnchor="16.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" fx:id="x_range" />
                                     <RangeSlider fx:id="y_range" orientation="VERTICAL" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="16.0" />
@@ -76,7 +77,7 @@
                               <Button fx:id="next" maxHeight="32000.0" mnemonicParsing="false" onAction="#incrementIndex" text=" ▷ " BorderPane.alignment="CENTER_RIGHT" />
                            </right>
                         </BorderPane>
-                      <AnchorPane maxHeight="183.0" minHeight="0.0" minWidth="0.0" >
+                      <AnchorPane minHeight="25">
                            <children>
                               <Button layoutX="450.0" layoutY="65.0" mnemonicParsing="false" onAction="#autoDetect" prefHeight="26.0" prefWidth="100.0" text="Auto" />
                               <Label alignment="CENTER_RIGHT" layoutX="25.0" layoutY="70.0" prefWidth="61.0" text="rows" />
@@ -93,7 +94,13 @@
                               <Label fx:id="notificationBar" layoutX="25.0" layoutY="194.0" text="" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="10.0" />
                               <TextField fx:id="mask" layoutX="300.0" layoutY="105.0" prefWidth="100.0" text="0.15" />
                               <Label alignment="CENTER_RIGHT" layoutX="225.0" layoutY="110.0" prefWidth="61.0" text="mask" />
-                              <Button layoutX="600.0" layoutY="105.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="150.0" text="Analyze &amp; Next" onAction="#analyzeAndNext" />
+                              <Button layoutX="600.0" layoutY="105.0" mnemonicParsing="false" onAction="#analyzeAndNext" prefHeight="26.0" prefWidth="150.0" text="Analyze &amp; Next" />
+                              <Slider fx:id="contrastSlider" layoutX="829.0" layoutY="62.0" orientation="HORIZONTAL" prefHeight="16.0" prefWidth="250.0" value="25.0" />
+                              <Slider fx:id="brightnessSlider" layoutX="829.0" layoutY="30.0" orientation="HORIZONTAL" prefHeight="16.0" prefWidth="250.0" value="50.0" />
+                              <Label layoutX="750.0" layoutY="30.0" text="brightness" />
+                              <Label layoutX="750.0" layoutY="62.0" text="contrast" />
+                              <Button layoutX="798.0" layoutY="92.0" mnemonicParsing="false" onAction="#removeMask" text="Remove mask" />
+                              <CheckBox layoutX="954.0" layoutY="96.0" mnemonicParsing="false" onAction="#toggleZoom" text="zoom" />
                            </children>
                         </AnchorPane>
                     </items>

@@ -13,6 +13,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
@@ -21,9 +22,11 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Slider;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
@@ -33,7 +36,10 @@ import org.controlsfx.control.RangeSlider;
 public class FXController {
 	
 	private int currentIndex;
+	private Prop prop;
 	private ObservableList<Config> configs;
+	
+	private boolean viewFixed;
 	
 	private Window stage;
 
@@ -65,6 +71,10 @@ public class FXController {
 	private Label notificationBar;
 	@FXML
 	protected TextField mask;
+	@FXML
+	private Slider brightnessSlider;
+	@FXML
+	private Slider contrastSlider;
 
 	private class SpinnerListener implements ChangeListener<String> {
 		
@@ -84,19 +94,23 @@ public class FXController {
 			
 			// only allow integer input
 			if (!newValue.matches("\\d*")) {
-	            //s.getEditor().setText(newValue.replaceAll("[^\\d]", ""));
-	            //if(s.getEditor().getText().isEmpty()) {
-	            	s.getEditor().setText(oldValue);
-	            //}
+	            s.getEditor().setText(oldValue);
 	        }
 			
 			if(!s.getEditor().getText().isEmpty()) {
 				// fix spinner bug
 				s.increment(0);
-				getConfig().deleteAnalysis();
 				drawGrid();
 			}
 			inProgress = false;
+		}
+	}
+	
+	private class SliderListener implements ChangeListener<Number> {
+
+		@Override
+		public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+			drawGrid();
 		}
 	}
 	
@@ -104,7 +118,6 @@ public class FXController {
 		
 		@Override
 		public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-			getConfig().deleteAnalysis();
 			drawGrid();
 		}
 	}
@@ -151,16 +164,29 @@ public class FXController {
 			
 			if(!t.getText().isEmpty()) {
 				getConfig().update();
-				getConfig().deleteAnalysis();
+				getConfig().resetMask();
 			}
 			
 			inProgress = false;
         }
 	}
 	
+	private class ImageClickHandler implements EventHandler<MouseEvent> {
+
+		@Override
+		public void handle(MouseEvent event) {
+			int[] index = getConfig().getClickedSpot(event.getX(), event.getY());
+			if (index != null) {
+				getConfig().toggleMask(index[0], index[1]);
+				drawGrid();
+			}
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	@FXML
 	private void initialize() {
+		fixView();
 		for (Spinner<Integer> s : new Spinner[]{rows, cols, size}) {
 			s.getEditor().textProperty().addListener(new SpinnerListener(s));
 		}
@@ -174,35 +200,45 @@ public class FXController {
 		
 		filename.textProperty().addListener(new DisabledTextFieldListener(filename));
 		
-		String path = "/home/stefan/Documents/eclipse/spotter/data/Legn Pneum 7_CK_20171213_66_5_2017.12.13-10.38.44.txt";
-		Mat mat = Util.fromFile(path);
-		File file = new File(path);
+		brightnessSlider.valueProperty().addListener(new SliderListener());
+		contrastSlider.valueProperty().addListener(new SliderListener());
+		
+		displayedImage.addEventHandler(MouseEvent.MOUSE_CLICKED, new ImageClickHandler());
+		
+		prop = new Prop();
 		
 		configs = FXCollections.observableArrayList();
-		configs.add(new Config(mat, this, file));
 		
-		path = "/home/stefan/Documents/eclipse/spotter/data/Lpn_Bellingham_10⁷_20171213-66-3_2017.12.13-12.34.35.txt";
-		Mat mat2 = Util.fromFile(path);
-		file = new File(path);
-		configs.add(new Config(mat2, this, file));
-		
+		File folder = new File("/home/stefan/Documents/eclipse/spotter/data/test");
+		for (File f : folder.listFiles()) {
+			configs.add(new Config(Util.fromFile(f), this, f, prop));
+		}
+
 		currentIndex = 0;
 		openFiles.setItems(configs);
-		updateView();
+		
+		rows.getValueFactory().setValue(prop.defaultRows);
+		cols.getValueFactory().setValue(prop.defaultCols);
+		size.getValueFactory().setValue(prop.defaultSize);
+		
+		// autoAll();
+		
+		unfixView();
 	}
 	
 	private Config getConfig() {
-		if (configs.size() > 0) {
+		if (configs != null & configs.size() > 0) {
 			return configs.get(currentIndex);
 		}
 		else {
 			Mat mat = new Mat(400, 600, CvType.CV_16UC3, new Scalar(0, 0, 0));
-			return new Config(mat, this, null);
+			return new Config(mat, this, null, prop);
 		}
 		
 	}
 	
 	private void readConfig() {
+		fixView();
 		Config config = getConfig();
 		config.fix();
 		
@@ -219,27 +255,52 @@ public class FXController {
 		y_range.setHighValue(config.y_highValue);
 		
 		config.unfix();
+		unfixView();
 	}
 	
 	private void updateView() {
-		drawGrid();
+		if (viewFixed) {
+			return;
+		}
+		boolean oldViewFixed = viewFixed;
+		fixView();
 		filename.setText(getConfig().toString());
 		save.selectedProperty().set(getConfig().isSaved());
 		openFiles.getSelectionModel().select(currentIndex);
+		viewFixed = oldViewFixed;
+		drawGrid();
+	}
+	
+	public void fixView() {
+		viewFixed = true;
+	}
+	
+	public void unfixView() {
+		viewFixed = false;
+		updateView();
 	}
 	
 	@FXML
 	protected void drawGrid() {
+		if (viewFixed) {
+			return;
+		}
+		boolean oldViewFixed = viewFixed;
+		fixView();
 		Config config = getConfig();
 		config.update();
 		
-		// set AnchorPane dimensions 
+		// set AnchorPane dimensions
 		anchorPane.setMaxWidth(config.x+16);
 		anchorPane.setMaxHeight(config.y+16);
 		anchorPane.setMinWidth(config.x+16);
 		anchorPane.setMinHeight(config.y+16);
 
 		Mat mat = config.getMat().clone();
+		
+		double alpha = Math.pow(1.1, contrastSlider.getValue()-25);
+		double beta = (brightnessSlider.getValue()-50)*255/50;
+		mat.convertTo(mat, mat.type(), alpha, beta);
 		
 		// draw guide lines
 		Imgproc.line(mat, new Point(0, config.y_upper), new Point(mat.cols(), config.y_upper),
@@ -267,13 +328,16 @@ public class FXController {
 			}	
 		}
 		
+		System.out.println("rows/cols " + config.rows + " " + config.cols);
+		System.out.println("spinner rows/cols" + rows.getValue() + " " + cols.getValue());
+		System.out.println(getConfig().masked.length + " " + getConfig().masked[0].length);
+		
 		// indicate masked spots
 		Analysis analysis = getConfig().getAnalysis();
 		if (analysis != null) {
-			boolean[][] masked = analysis.getMasked();
 			for (int i = 0; i < config.rows; i++) {
 				for (int j = 0; j < config.cols; j++) {
-					if (masked[j][i]) {
+					if (getConfig().masked[j][i]) {
 						Imgproc.line(mat,
 								new Point(config.x_lower - config.size/2 + j*config.x_dist, config.y_upper - config.size/2 + i*config.y_dist),
 								new Point(config.x_lower + config.size/2 + j*config.x_dist, config.y_upper + config.size/2 + i*config.y_dist),
@@ -292,6 +356,7 @@ public class FXController {
 		displayedImage.setImage(Util.toImage(mat));
 		displayedImage.setFitWidth(mat.cols());
 		displayedImage.setFitHeight(mat.rows());
+		viewFixed = oldViewFixed;
 	}
 	
 	@FXML
@@ -349,7 +414,7 @@ public class FXController {
             for (File file : list) {
                 Mat mat = Util.fromFile(file);
                 if (mat != null) {
-                    configs.add(new Config(mat, this, file));
+                    configs.add(new Config(mat, this, file, prop));
                 }
                 else {
                 	Alert alert = new Alert(AlertType.NONE,
@@ -358,7 +423,9 @@ public class FXController {
                 }
             }
         }
-        updateView();
+        autoAll();
+        autoDetect();
+        // updateView();
 	}
 	
 	@FXML
@@ -397,8 +464,9 @@ public class FXController {
 	
 	@FXML
 	protected void autoDetect() {
+		fixView();
 		getConfig().autoDetect();
-		updateView();
+		unfixView();
 	}
 	
 	@FXML
@@ -421,6 +489,17 @@ public class FXController {
 	protected void analyzeAndNext() {
 		analyzeMatrix();
 		incrementIndex();
+	}
+	
+	@FXML
+	protected void removeMask() {
+		getConfig().masked = new boolean[cols.getValue()][rows.getValue()];
+		updateView();
+	}
+	
+	@FXML
+	protected void toggleZoom() {
+		
 	}
 	
 	public void setStage(Window stage) {
