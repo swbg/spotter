@@ -1,6 +1,7 @@
 package application;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 
 import org.opencv.core.Core;
 
@@ -19,7 +20,21 @@ public class Main extends Application {
 	public void start(Stage primaryStage) {
 		this.primaryStage = primaryStage;
         this.primaryStage.setTitle("Spotter");
-        // primaryStage.setMaximized(true);
+        primaryStage.setMaximized(true);
+        
+        try {
+            System.setProperty("java.library.path", "spotter_lib");
+            System.out.print("OpenCV library expected at: ");
+            System.out.println(System.getProperty("java.library.path"));
+
+            Field fieldSysPath = ClassLoader.class.getDeclaredField("sys_paths");
+            fieldSysPath.setAccessible(true);
+            fieldSysPath.set(null, null);
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw new RuntimeException(ex);
+        }
         
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
@@ -29,15 +44,12 @@ public class Main extends Application {
 	public void initLayout() {
         try {
             FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("SpotterJFX.fxml"));
+            loader.setLocation(Main.class.getResource("Main.fxml"));
             rootLayout = (BorderPane) loader.load();
             
             Scene scene = new Scene(rootLayout);
             primaryStage.setScene(scene);
             primaryStage.show();
-            
-            FXController controller = loader.getController();
-            controller.setStage(scene.getWindow());
         } catch (IOException e) {
             e.printStackTrace();
         }

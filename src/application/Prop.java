@@ -1,7 +1,6 @@
 package application;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,12 +14,15 @@ import org.apache.commons.csv.CSVRecord;
 
 public class Prop {
 	
-	private static final String CONFIGPATH = "config/config.properties";
-	private static final String TYPEPATH = "config/type.tsv";
-	
+	private static final String CONFIGPATH = System.getProperty("user.dir") + "/config/config.properties";
+
 	public int defaultRows;
 	public int defaultCols;
 	public int defaultSize;
+	
+	public String typePath;
+	
+	public double autoSensitivity;
 	
 	public double fractionBrightestPixels;
 	public int minBrightestPixels;
@@ -28,8 +30,10 @@ public class Prop {
 	public int maxLevel;
 	public double[] levelSpacing;
 	
-	public ArrayList<String> types = new ArrayList<>();
-	public ArrayList<Double[]> typeMeans = new ArrayList<>();
+	public ArrayList<String> types;
+	public ArrayList<Double[]> typeMeans;
+	
+	public double defaultBrightness, defaultContrast;
 	
 	public Prop() {
 		Properties prop = new Properties();
@@ -40,19 +44,27 @@ public class Prop {
 			System.out.println("Error loading conifg.properties.");
 			System.exit(1);
 		}
-		System.out.println("### Loading config.properties... ###");
+		System.out.println("### Loading " +  CONFIGPATH + " ###");
 		defaultRows = Integer.parseInt(prop.getProperty("defaultRows", "5"));
 		System.out.println("defaultRows=" + defaultRows);
 		defaultCols = Integer.parseInt(prop.getProperty("defaultCols", "16"));
 		System.out.println("defaultCols=" + defaultCols);
 		defaultSize = Integer.parseInt(prop.getProperty("defaultSize", "20"));
 		System.out.println("defaultSize=" + defaultSize);
+		defaultBrightness = Double.parseDouble(prop.getProperty("defaultBrightness", "50.0"));
+		System.out.println("defaultBrightness=" + defaultBrightness);
+		defaultContrast = Double.parseDouble(prop.getProperty("defaultContrast", "25.0"));
+		System.out.println("defaultContrast=" + defaultContrast);
 		fractionBrightestPixels = Double.parseDouble(prop.getProperty("fractionBrightestPixels", "0.1"));
 		System.out.println("fractionBrightestPixels=" + fractionBrightestPixels);
 		minBrightestPixels = Integer.parseInt(prop.getProperty("minBrightestPixels", "10"));
 		System.out.println("minBrightestPixels=" + minBrightestPixels);
 		maxLevel = Integer.parseInt(prop.getProperty("maxLevel", "3"));
 		System.out.println("maxLevel=" + maxLevel);
+		typePath = System.getProperty("user.dir") + "/" + prop.getProperty("typePath", "config/type.tsv");
+		System.out.println("typePath=" + typePath);
+		autoSensitivity = Double.parseDouble(prop.getProperty("autoSensitivity", "1.0"));
+		System.out.println("autoSensitivity=" + autoSensitivity);
 		if (prop.getProperty("levelSpacing", "null").equals("default")) {
 			calculateDefaultSpacing();
 		} else {
@@ -70,10 +82,16 @@ public class Prop {
 		}
 		System.out.println("levelSpacing=" + Arrays.toString(levelSpacing));
 		
-		System.out.println("### Loading type.tsv ###");
+		readTypeFile();
+	}
+	
+	private int readTypeFile() {
+		System.out.println("### Loading " + typePath + " ###");
+		types = new ArrayList<>();
+		typeMeans = new ArrayList<>();
 		Reader in;
 		try {
-			in = new FileReader(TYPEPATH);
+			in = new FileReader(typePath);
 			Iterable<CSVRecord> records = CSVFormat.TDF.parse(in);
 			for (CSVRecord record : records) {
 				types.add(record.get(0));
@@ -86,11 +104,12 @@ public class Prop {
 			}
 		} catch (IOException e) {
 			System.out.println("Error loading type.tsv.");
-			System.exit(1);
+			return 1;
 		}
 		for (int i = 0; i < types.size(); i++) {
 			System.out.println(types.get(i) + ": " + Arrays.toString(typeMeans.get(i)));
 		}
+		return 0;
 	}
 	
 	private void calculateDefaultSpacing() {
@@ -99,5 +118,17 @@ public class Prop {
 			levelSpacing[i] = 1.0*i / (maxLevel+1);
 		}
 		levelSpacing[maxLevel+1] = 1.0;
+	}
+	
+	public void updateTypeFile(String path) {
+		if (path != typePath) {
+			String oldPath = typePath;
+			typePath = path;
+			if (readTypeFile() != 0) {
+				System.out.println("Selected file " + typePath + " could not be read, falling back to " + oldPath + ".");
+				typePath = oldPath;
+				readTypeFile();
+			}
+		}
 	}
 }
