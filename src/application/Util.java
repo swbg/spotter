@@ -26,6 +26,7 @@ public class Util {
 	
 	// https://stackoverflow.com/a/33605064
 	public static Image toImage(Mat mat) {
+		mat.convertTo(mat, CvType.CV_8UC3);
 		MatOfByte byteMat = new MatOfByte();
 		Imgcodecs.imencode(".bmp", mat, byteMat);
 		return new Image(new ByteArrayInputStream(byteMat.toArray()));

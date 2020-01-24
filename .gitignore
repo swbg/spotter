@@ -1,6 +1,8 @@
 /bin
 /data
-/spotter_lib
+/images
+/opencv_32
+/opencv_64
 .*
 .gitignore
 *.tsv

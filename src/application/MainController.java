@@ -430,9 +430,12 @@ public class MainController {
 	private Mat getMat(Config config) {
 		Mat mat = config.getMat().clone();
 
-		double alpha = Math.pow(1.1, config.contrast-25);
-		double beta = (config.brightness-100)*65535/100;
+		double alpha = Math.pow(1.1, config.contrast-50);
+		double beta = (config.brightness-50)*65536/50*256/65536;
 		mat.convertTo(mat, mat.type(), alpha, beta);
+		
+		System.out.println(config.brightness);
+		System.out.println(mat.get(10, 10)[0]);
 		
 		// draw guide lines
 //		Imgproc.line(mat, new Point(0, config.y_upper), new Point(mat.cols(), config.y_upper),
