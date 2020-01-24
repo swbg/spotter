@@ -30,8 +30,8 @@ public class Prop {
 	public int maxLevel;
 	public double[] levelSpacing;
 	
-	public ArrayList<String> types;
-	public ArrayList<Double[]> typeMeans;
+	// public ArrayList<String> types;
+	// public ArrayList<Double[]> typeMeans;
 	
 	public double defaultBrightness, defaultContrast;
 	
@@ -59,6 +59,9 @@ public class Prop {
 		System.out.println("fractionBrightestPixels=" + fractionBrightestPixels);
 		minBrightestPixels = Integer.parseInt(prop.getProperty("minBrightestPixels", "10"));
 		System.out.println("minBrightestPixels=" + minBrightestPixels);
+		
+		// options below deactivated
+		/*
 		maxLevel = Integer.parseInt(prop.getProperty("maxLevel", "3"));
 		System.out.println("maxLevel=" + maxLevel);
 		typePath = System.getProperty("user.dir") + "/" + prop.getProperty("typePath", "config/type.tsv");
@@ -83,8 +86,10 @@ public class Prop {
 		System.out.println("levelSpacing=" + Arrays.toString(levelSpacing));
 		
 		readTypeFile();
+		*/
 	}
 	
+	/*
 	private int readTypeFile() {
 		System.out.println("### Loading " + typePath + " ###");
 		types = new ArrayList<>();
@@ -111,7 +116,9 @@ public class Prop {
 		}
 		return 0;
 	}
+	*/
 	
+	/*
 	private void calculateDefaultSpacing() {
 		levelSpacing = new double[maxLevel+2];
 		for (int i = 0; i < maxLevel+1; i++) {
@@ -119,7 +126,9 @@ public class Prop {
 		}
 		levelSpacing[maxLevel+1] = 1.0;
 	}
+	*/
 	
+	/*
 	public void updateTypeFile(String path) {
 		if (path != typePath) {
 			String oldPath = typePath;
@@ -131,4 +140,5 @@ public class Prop {
 			}
 		}
 	}
+	*/
 }

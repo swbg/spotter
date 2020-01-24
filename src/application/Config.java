@@ -221,11 +221,16 @@ public class Config implements Serializable {
 	}
 	
 	private ArrayList<Double> batchAuto(int retry) {
+		System.out.println("batchAuto(" + retry + ");");
 		System.out.println("Attempting auto detection for " + file.getName() +
 				" with " + rows + " rows and " + cols + " columns.");
 		
 		Mat tmp = mat.clone();
 		Imgproc.cvtColor(tmp, tmp, Imgproc.COLOR_RGB2GRAY);
+		
+		// fix for 255 65535
+		tmp.convertTo(tmp, tmp.type(), 255.0/65535.0, 0);
+		
 		Imgproc.GaussianBlur(tmp, tmp, new Size(11, 11), 0, 0);
 		// batchAuto is more stringent than semiAuto
 		tmp.convertTo(tmp, tmp.type(), 1.0, -100/(retry+1));
@@ -292,6 +297,10 @@ public class Config implements Serializable {
 		// determine vertical pattern
 		tmp = mat.clone();
 		Imgproc.cvtColor(tmp, tmp, Imgproc.COLOR_RGB2GRAY);
+		
+		// fix for 255 65535
+		tmp.convertTo(tmp, tmp.type(), 255.0/65535.0, 0);
+		
 		Imgproc.GaussianBlur(tmp, tmp, new Size(11, 11), 0, 0);
 		
 		// make anything outside the main spot pattern black
@@ -386,6 +395,9 @@ public class Config implements Serializable {
 		
 		Mat tmp = mat.clone();
 		Imgproc.cvtColor(tmp, tmp, Imgproc.COLOR_RGB2GRAY);
+		
+		tmp.convertTo(tmp, tmp.type(), 255.0/65535.0, 0);
+		
 		Imgproc.GaussianBlur(tmp, tmp, new Size(11, 11), 0, 0);
 		// Imgproc.threshold(tmp, tmp, 80, 255, Imgproc.THRESH_BINARY);
 		tmp.convertTo(tmp, tmp.type(), 1.0, -80/(retry+1));
@@ -458,6 +470,10 @@ public class Config implements Serializable {
 		// determine vertical pattern
 		tmp = mat.clone();
 		Imgproc.cvtColor(tmp, tmp, Imgproc.COLOR_RGB2GRAY);
+		
+		// fix for 255 65535
+		tmp.convertTo(tmp, tmp.type(), 255.0/65535.0, 0);
+		
 		Imgproc.GaussianBlur(tmp, tmp, new Size(11, 11), 0, 0);
 		// tmp.convertTo(tmp, tmp.type(), 1.0, -40/(retry+1));
 		for (int i = 0; i < transitions.size()-1; i++) {

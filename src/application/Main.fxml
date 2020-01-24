@@ -33,17 +33,11 @@
               <MenuItem mnemonicParsing="false" onAction="#saveFile" text="Save current file" />
               <MenuItem mnemonicParsing="false" onAction="#saveAllFiles" text="Save all files" />
                   <SeparatorMenuItem mnemonicParsing="false" />
+              <MenuItem mnemonicParsing="false" onAction="#exportExcel" text="Export to Excel" />
+              <MenuItem mnemonicParsing="false" onAction="#exportTSV" text="Export to TSV" />
+              <MenuItem mnemonicParsing="false" onAction="#exportImages" text="Export images" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
               <MenuItem mnemonicParsing="false" onAction="#quitProgram" text="Quit" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
-          	<items>
-              <MenuItem mnemonicParsing="false" onAction="#autoAll" text="Auto all" />
-              <MenuItem mnemonicParsing="false" onAction="#propagateGrid" text="Propagate grid settings" />
-              <MenuItem mnemonicParsing="false" onAction="#openProjectPreferences" text="Preferences" />
-              <MenuItem mnemonicParsing="false" onAction="#exportExcel" text="Export analysis to Excel file" />
-              <MenuItem mnemonicParsing="false" onAction="#exportTSV" text="Export analysis to TSV file" />
-              <MenuItem mnemonicParsing="false" onAction="#exportImages" text="Export image files" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
@@ -93,7 +87,7 @@
                   </BorderPane>
                 <AnchorPane minHeight="156.0">
                      <children>
-                        <Button fx:id="autoButton" layoutX="450.0" layoutY="65.0" mnemonicParsing="false" onAction="#autoDetect" prefHeight="26.0" prefWidth="115.0" text="Auto" />
+                        <Button fx:id="propagateButton" layoutX="450.0" layoutY="65.0" mnemonicParsing="false" onAction="#propagateGrid" prefHeight="26.0" prefWidth="115.0" text="Propagate" />
                         <Label alignment="CENTER_RIGHT" layoutX="25.0" layoutY="70.0" prefWidth="61.0" text="rows" />
                         <Label alignment="CENTER_RIGHT" layoutX="25.0" layoutY="110.0" prefWidth="61.0" text="columns" />
                         <Label alignment="CENTER_RIGHT" layoutX="225.0" layoutY="70.0" prefWidth="61.0" text="size" />

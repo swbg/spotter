@@ -117,8 +117,8 @@ public class MainController {
 	private Slider contrastSlider;
 	@FXML
 	private ScrollPane scroller;
-	@FXML
-	private Button autoButton;
+	// @FXML
+	// private Button autoButton;
 	@FXML
 	private Button removeMaskButton;
 	@FXML
@@ -344,7 +344,7 @@ public class MainController {
 			size.setDisable(true);
 			mask.setDisable(true);
 			analyzeButton.setDisable(true);
-			autoButton.setDisable(true);
+			// autoButton.setDisable(true);
 			removeMaskButton.setDisable(true);
 		} else {
 			rows.setDisable(false);
@@ -352,7 +352,7 @@ public class MainController {
 			size.setDisable(false);
 			mask.setDisable(false);
 			analyzeButton.setDisable(false);
-			autoButton.setDisable(false);
+			// autoButton.setDisable(false);
 			removeMaskButton.setDisable(false);
 		}
 
@@ -431,7 +431,7 @@ public class MainController {
 		Mat mat = config.getMat().clone();
 
 		double alpha = Math.pow(1.1, config.contrast-25);
-		double beta = (config.brightness-50)*255/50;
+		double beta = (config.brightness-100)*65535/100;
 		mat.convertTo(mat, mat.type(), alpha, beta);
 		
 		// draw guide lines
@@ -800,6 +800,7 @@ public class MainController {
     			"contact" +
     			"\tStefan Weißenberger\n" +
     			"\t\tweissenberger.stefan@gmx.net\n" +
+    			"\t\tgithub.com/swbg/spotter\n" +
     			"built with" +
     			"\tOpenCV 3.4.2\n" +
     			"\t\tcontrolsfx 8.40.14\n" +

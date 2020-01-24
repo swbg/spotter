@@ -143,7 +143,7 @@ public class ProjectPreferencesController {
 		parentController.prop.defaultRows = rowSpinner.getValue();
 		parentController.prop.defaultCols = colSpinner.getValue();
 		parentController.prop.autoSensitivity = Double.parseDouble(sensitivityTextField.getText());
-		parentController.prop.updateTypeFile(filenameTextField.getText());
+		// parentController.prop.updateTypeFile(filenameTextField.getText());
 		Stage stage = (Stage) rowSpinner.getScene().getWindow();
 	    stage.close();
 	}

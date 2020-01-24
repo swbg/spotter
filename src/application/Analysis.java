@@ -60,10 +60,11 @@ public class Analysis implements Serializable {
 	public void analyzeConfig() {
 		calculateSpots();
 		calculateStatistics();
-		calculateType();
+		// calculateType();
 		analyzed = true;
 	}
 	
+	/*
 	private void calculateType() {
 		ArrayList<String> types = config.getController().prop.types;
 		ArrayList<Double[]> typeMeans = config.getController().prop.typeMeans;
@@ -87,6 +88,7 @@ public class Analysis implements Serializable {
 		Collections.sort(scores, new PairComparator<String, Double>());
 		this.scores = scores;
 	}
+	*/
 	
 	public void calculateSpots() {
 		spots = new double[config.cols][config.rows];
@@ -119,7 +121,7 @@ public class Analysis implements Serializable {
 				for (Short s : q) {
 					sum += s;
 				}
-				spots[j][i] = ((double) sum / (double) brightestPixels) / 255.0;
+				spots[j][i] = ((double) sum / (double) brightestPixels) / 65535.0;
 				q.clear();
 			}
 		}
@@ -166,6 +168,7 @@ public class Analysis implements Serializable {
 	}
 	
 	private String toString(char sep, boolean transposed) {
+		int factor = 1;
 		if (spots.length == 0) {
 			return "no data for " + config.getFileName();
 		}
@@ -176,7 +179,7 @@ public class Analysis implements Serializable {
 	        	sb.append(config.getFileName() + sep + "row_" + (i+1));
 	        	for (int j = 0; j < spots.length; j++) {
 	        		sb.append(sep);
-	        		sb.append((int) Math.round(spots[j][i]*65535));	        		
+	        		sb.append((int) Math.round(spots[j][i]*factor));	        		
 	        	}
 	        	sb.append("\n");
 	        }
@@ -193,14 +196,14 @@ public class Analysis implements Serializable {
 			sb.append(config.getFileName() + sep + "mean");
 			for (int i = 0; i < spots.length; i++) {
 				sb.append(sep);
-				sb.append(mean[i] * 65535);
+				sb.append(mean[i] * factor);
 			}
 			sb.append("\n");
 			
 			sb.append(config.getFileName() + sep + "sd");
 			for (int i = 0; i < spots.length; i++) {
 				sb.append(sep);
-				sb.append(sd[i] * 65535);
+				sb.append(sd[i] * factor);
 			}
 			sb.append("\n");
 		}
@@ -221,16 +224,16 @@ public class Analysis implements Serializable {
 	        	sb.append(config.getFileName() + sep + i + sep);
 		        
 	        	for (int j = 0; j < spots[0].length; j++) {
-	        		sb.append((int) Math.round(spots[j][i]*65535));
+	        		sb.append((int) Math.round(spots[j][i]*factor));
 	        		sb.append(sep);
 	        	}
 	        	for (int j = 0; j < spots[0].length; j++) {
 	        		sb.append(config.masked[i][j] ? "1" : "0");
 	        		sb.append(sep);
 	        	}
-	        	sb.append(mean[i] * 65535);
+	        	sb.append(mean[i] * factor);
 	        	sb.append(sep);
-	        	sb.append(sd[i] * 65535);
+	        	sb.append(sd[i] * factor);
 	        	sb.append("\n");
 	        }
 		}

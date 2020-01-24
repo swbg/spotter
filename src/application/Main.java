@@ -23,7 +23,12 @@ public class Main extends Application {
         primaryStage.setMaximized(true);
         
         try {
-            System.setProperty("java.library.path", "spotter_lib");
+        	if (System.getProperty("sun.arch.data.model").equals("32")) {
+        		System.setProperty("java.library.path", "opencv_32");
+        	}
+        	else {
+        		System.setProperty("java.library.path", "opencv_64");
+        	}
             System.out.print("OpenCV library expected at: ");
             System.out.println(System.getProperty("java.library.path"));
 
