@@ -77,16 +77,10 @@ public class MainController {
 	
 	private File lastDirectory = new File(System.getProperty("user.home"));
 	
-	// private double brightness, contrast;
-	
-	// private Window stage;
-
 	@FXML
 	private Button prev;
 	@FXML
 	private Button next;
-	// @FXML
-	// private CheckBox save;
 	@FXML
 	public ImageView displayedImage;
 	@FXML
@@ -286,6 +280,7 @@ public class MainController {
 		rows.getValueFactory().setValue(prop.defaultRows);
 		cols.getValueFactory().setValue(prop.defaultCols);
 		size.getValueFactory().setValue(prop.defaultSize);
+		mask.setText("" + prop.defaultMask);
 		
 		// autoAll();
 		
@@ -345,7 +340,7 @@ public class MainController {
 			mask.setDisable(true);
 			analyzeButton.setDisable(true);
 			// autoButton.setDisable(true);
-			removeMaskButton.setDisable(true);
+			// removeMaskButton.setDisable(true);
 		} else {
 			rows.setDisable(false);
 			cols.setDisable(false);
@@ -353,7 +348,7 @@ public class MainController {
 			mask.setDisable(false);
 			analyzeButton.setDisable(false);
 			// autoButton.setDisable(false);
-			removeMaskButton.setDisable(false);
+			// removeMaskButton.setDisable(false);
 		}
 
 		// save.selectedProperty().set(getConfig().isSaved());
@@ -430,12 +425,9 @@ public class MainController {
 	private Mat getMat(Config config) {
 		Mat mat = config.getMat().clone();
 
-		double alpha = Math.pow(1.1, config.contrast-50);
+		double alpha = Math.pow(1.1, config.contrast-75);
 		double beta = (config.brightness-50)*65536/50*256/65536;
 		mat.convertTo(mat, mat.type(), alpha, beta);
-		
-		System.out.println(config.brightness);
-		System.out.println(mat.get(10, 10)[0]);
 		
 		// draw guide lines
 //		Imgproc.line(mat, new Point(0, config.y_upper), new Point(mat.cols(), config.y_upper),
@@ -509,7 +501,7 @@ public class MainController {
 		if (analysis.analyzed) {
 			// crop image
 			mat = mat.rowRange((int) Math.round(config.y_upper-50),	(int) Math.round(config.y_lower+30));
-
+			
 			int displaySize = 110 + (config.rows+1)*60;
 			BufferedImage bufferedImage = new BufferedImage(mat.cols(), displaySize, BufferedImage.TYPE_3BYTE_BGR); //USHORT_555_RGB);
 	        Graphics2D graphics = (Graphics2D) bufferedImage.getGraphics();
@@ -554,9 +546,14 @@ public class MainController {
 	        
 	        graphics.drawLine(10, 52+60*config.rows, mat.cols()-10, 52+60*config.rows);
 	        
+	        graphics.setColor(Color.BLACK);
+	        graphics.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 16));
+	        
 	        int i = config.rows;
 	        graphics.drawString("m", 13, 80 + i*60);
 	        graphics.drawString("sd", 11, 80 + (i+1)*60);
+	        
+	        analysis.calculateStatistics();
 	        
 	        // means
 	        for (int j = 0; j < config.cols; j++) {
@@ -669,15 +666,25 @@ public class MainController {
 		if (configs.size() == 0) {
 			return;
 		}
-		getConfig().analyzeConfig();
+		boolean autoMask = !getConfig().isMasked();
+		getConfig().analyzeConfig(autoMask);
 		updateView();
 	}
 	
 	@FXML
 	protected void analyzeAll() {
 		for (Config c : configs) {
-			c.analyzeConfig();
+			c.analyzeConfig(!c.isMasked());
 		}
+		updateView();
+	}
+	
+	@FXML
+	protected void resetAll() {
+		for (Config c : configs) {
+			c.getAnalysis().analyzed = false;
+		}
+		updateView();
 	}
 	
 	@FXML
@@ -799,7 +806,7 @@ public class MainController {
 	@FXML
 	protected void showAbout() {
 		Alert alert = new Alert(AlertType.NONE,
-    			"Spotter v0.1\n" +
+    			"MCR Spot Reader\n" +
     			"contact" +
     			"\tStefan Weißenberger\n" +
     			"\t\tweissenberger.stefan@gmx.net\n" +

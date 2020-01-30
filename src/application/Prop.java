@@ -1,16 +1,16 @@
 package application;
 
 import java.io.FileInputStream;
-import java.io.FileReader;
+// import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Arrays;
+// import java.io.Reader;
+// import java.util.ArrayList;
+// import java.util.Arrays;
 import java.util.Properties;
 
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVRecord;
+// import org.apache.commons.csv.CSVFormat;
+// import org.apache.commons.csv.CSVRecord;
 
 public class Prop {
 	
@@ -29,6 +29,8 @@ public class Prop {
 	
 	public int maxLevel;
 	public double[] levelSpacing;
+	
+	public double defaultMask;
 	
 	// public ArrayList<String> types;
 	// public ArrayList<Double[]> typeMeans;
@@ -58,6 +60,8 @@ public class Prop {
 		fractionBrightestPixels = Double.parseDouble(prop.getProperty("fractionBrightestPixels", "0.1"));
 		System.out.println("fractionBrightestPixels=" + fractionBrightestPixels);
 		minBrightestPixels = Integer.parseInt(prop.getProperty("minBrightestPixels", "10"));
+		System.out.println("minBrightestPixels=" + minBrightestPixels);
+		defaultMask = Double.parseDouble(prop.getProperty("defaultMask", "0.10"));
 		System.out.println("minBrightestPixels=" + minBrightestPixels);
 		
 		// options below deactivated

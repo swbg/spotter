@@ -133,7 +133,11 @@ public class Config implements Serializable {
 	}
 	
 	public void analyzeConfig() {
-		analysis.analyzeConfig();
+		analyzeConfig(false);
+	}
+	
+	public void analyzeConfig(boolean autoMask) {
+		analysis.analyzeConfig(autoMask);
 		System.out.println(analysis);
 	}
 	
@@ -174,6 +178,11 @@ public class Config implements Serializable {
 	}
 	
 	public int[] getClickedSpot(double x, double y) {
+		if (this.analysis.analyzed) {
+			// correction in case image is cropped
+			y += (int) Math.round(this.y_upper-50);
+		}
+		
 		x = x - x_lower + x_dist/2;
 		y = y - y_upper + y_dist/2;
 		
@@ -756,5 +765,18 @@ public class Config implements Serializable {
 //		mat = Util.fromFile(file);
 //	}
 	
+	public boolean isMasked() {
+		if (masked == null || masked.length < 1) {
+			return false;
+		}
+		for (int i = 0; i < masked.length; i++) {
+			for (int j = 0; j < masked[i].length; j++) {
+				if (masked[i][j]) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	
 }

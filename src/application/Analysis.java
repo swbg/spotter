@@ -4,8 +4,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
+// import java.util.ArrayList;
+// import java.util.Collections;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
@@ -17,7 +17,7 @@ public class Analysis implements Serializable {
 	private double[][] spots;
 	private double[] mean;
 	private double[] sd;
-	private ArrayList<Pair<String, Double>> scores;
+	// private ArrayList<Pair<String, Double>> scores;
 	public boolean analyzed;
 	
 	private class MaxComparator implements Comparator<Short> {
@@ -28,6 +28,7 @@ public class Analysis implements Serializable {
 		}	
 	}
 	
+	/*
 	private class PairComparator<K, V extends Comparable<V>> implements Comparator<Pair<K, V>> {
 
 		@Override
@@ -35,7 +36,9 @@ public class Analysis implements Serializable {
 			return o1.value.compareTo(o2.value);
 		}	
 	}
+	*/
 	
+	/*
 	private class Pair<K, V> implements Serializable {
 		private static final long serialVersionUID = 3L;
 		public K key;
@@ -51,6 +54,7 @@ public class Analysis implements Serializable {
 			return key + ": " + value;
 		}
 	}
+	*/
 	
 	public Analysis(Config config) {
 		this.config = config;
@@ -58,7 +62,14 @@ public class Analysis implements Serializable {
 	}
 	
 	public void analyzeConfig() {
+		analyzeConfig(false);
+	}
+	
+	public void analyzeConfig(boolean autoMask) {
 		calculateSpots();
+		if (autoMask) {
+			autoMask();
+		}
 		calculateStatistics();
 		// calculateType();
 		analyzed = true;
@@ -125,8 +136,8 @@ public class Analysis implements Serializable {
 				q.clear();
 			}
 		}
-		System.out.println(spots[0][1]);
-		System.out.println(spots[1][0]);
+		// System.out.println(spots[0][1]);
+		// System.out.println(spots[1][0]);
 	}
 	
 	public void autoMask() {

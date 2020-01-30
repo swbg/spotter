@@ -40,6 +40,12 @@
               <MenuItem mnemonicParsing="false" onAction="#quitProgram" text="Quit" />
             </items>
           </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+            <items>
+              <MenuItem mnemonicParsing="false" onAction="#analyzeAll" text="Analyze all" />
+              <MenuItem mnemonicParsing="false" onAction="#resetAll" text="Reset all" />
+            </items>
+          </Menu>
           <Menu mnemonicParsing="false" text="Help">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#showAbout" text="About" />
