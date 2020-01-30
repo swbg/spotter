@@ -5,5 +5,3 @@
 /opencv_64
 .gitignore
 .settings
-*.tsv
-*.xlsx

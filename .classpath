@@ -12,5 +12,8 @@
 	</classpathentry>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/controlsfx-8.40.15"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/commons-csv-1.5"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/apache-poi"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/controlsfx"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/opencv"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
