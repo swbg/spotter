@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.Serializable;
-// import java.util.ArrayList;
-// import java.util.Collections;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 
@@ -17,7 +15,6 @@ public class Analysis implements Serializable {
 	private double[][] spots;
 	private double[] mean;
 	private double[] sd;
-	// private ArrayList<Pair<String, Double>> scores;
 	public boolean analyzed;
 	
 	private class MaxComparator implements Comparator<Short> {
@@ -27,34 +24,6 @@ public class Analysis implements Serializable {
 			return o1 > o2 ? 1 : -1;
 		}	
 	}
-	
-	/*
-	private class PairComparator<K, V extends Comparable<V>> implements Comparator<Pair<K, V>> {
-
-		@Override
-		public int compare(Pair<K, V> o1, Pair<K, V> o2) {
-			return o1.value.compareTo(o2.value);
-		}	
-	}
-	*/
-	
-	/*
-	private class Pair<K, V> implements Serializable {
-		private static final long serialVersionUID = 3L;
-		public K key;
-		public V value;
-		
-		Pair(K key, V value) {
-			this.key = key;
-			this.value = value;
-		}
-		
-		@Override
-		public String toString() {
-			return key + ": " + value;
-		}
-	}
-	*/
 	
 	public Analysis(Config config) {
 		this.config = config;
@@ -71,35 +40,8 @@ public class Analysis implements Serializable {
 			autoMask();
 		}
 		calculateStatistics();
-		// calculateType();
 		analyzed = true;
 	}
-	
-	/*
-	private void calculateType() {
-		ArrayList<String> types = config.getController().prop.types;
-		ArrayList<Double[]> typeMeans = config.getController().prop.typeMeans;
-		if (typeMeans.size() < 1) {
-			System.out.println("No type data available.");
-			return;
-		}
-		int size = typeMeans.get(0).length;
-		if (size != mean.length) {
-			System.out.println("Spot pattern does not match type pattern. Restricting analysis to minimum column number.");
-			size = Math.min(size, mean.length);
-		}
-		ArrayList<Pair<String, Double>> scores = new ArrayList<>();
-		for (int i = 0; i < types.size(); i++) {
-			double ls = 0.0;
-			for (int j = 0; j < size; j++) {
-				ls += (typeMeans.get(i)[j]-mean[j])*(typeMeans.get(i)[j]-mean[j]);
-			}
-			scores.add(new Pair<String, Double>(types.get(i), ls));
-		}
-		Collections.sort(scores, new PairComparator<String, Double>());
-		this.scores = scores;
-	}
-	*/
 	
 	public void calculateSpots() {
 		spots = new double[config.cols][config.rows];
@@ -120,7 +62,6 @@ public class Analysis implements Serializable {
 				for (int x = x_start; x <= x_end; x++) {
 					for (int y = y_start; y <= y_end; y++) {
 						config.getMat().get(y, x, tmp);
-						//sum += tmp[0];
 						if (q.size() > brightestPixels) {
 							q.poll();
 						}
@@ -128,7 +69,6 @@ public class Analysis implements Serializable {
 					}
 				}
 				q.poll();
-				// int num = (x_end - x_start + 1)*(y_end - y_start + 1);
 				for (Short s : q) {
 					sum += s;
 				}
@@ -136,8 +76,6 @@ public class Analysis implements Serializable {
 				q.clear();
 			}
 		}
-		// System.out.println(spots[0][1]);
-		// System.out.println(spots[1][0]);
 	}
 	
 	public void autoMask() {
@@ -248,9 +186,7 @@ public class Analysis implements Serializable {
 	        	sb.append("\n");
 	        }
 		}
-		
-		// sb.append(scores);
-		
+
         return sb.toString();
 	}
 	

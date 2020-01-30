@@ -14,8 +14,6 @@ import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.opencv.core.Core;
@@ -32,8 +30,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
@@ -47,7 +43,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -111,8 +106,6 @@ public class MainController {
 	private Slider contrastSlider;
 	@FXML
 	private ScrollPane scroller;
-	// @FXML
-	// private Button autoButton;
 	@FXML
 	private Button removeMaskButton;
 	@FXML
@@ -139,7 +132,7 @@ public class MainController {
 	            s.getEditor().setText(oldValue);
 	        }
 			
-			if(!s.getEditor().getText().isEmpty()) {
+			if (!s.getEditor().getText().isEmpty()) {
 				// fix spinner bug
 				s.increment(0);
 				drawGrid();
@@ -214,7 +207,7 @@ public class MainController {
             	t.setText(oldValue);
             }
 			
-			if(!t.getText().isEmpty()) {
+			if (!t.getText().isEmpty()) {
 				getConfig().update();
 				getConfig().resetMask();
 			}
@@ -244,36 +237,18 @@ public class MainController {
 		}
 		
 		mask.textProperty().addListener(new MaskTextFieldListener(mask));
-		
 		x_range.highValueProperty().addListener(new RangeSliderListener());
 		x_range.lowValueProperty().addListener(new RangeSliderListener());
 		y_range.highValueProperty().addListener(new RangeSliderListener());
 		y_range.lowValueProperty().addListener(new RangeSliderListener());
-		
 		filename.textProperty().addListener(new DisabledTextFieldListener(filename));
-		
 		brightnessSlider.valueProperty().addListener(new BrightnessSliderListener());
 		contrastSlider.valueProperty().addListener(new ContrastSliderListener());
-		
 		displayedImage.addEventHandler(MouseEvent.MOUSE_CLICKED, new ImageClickHandler());
 		
 		prop = new Prop();
 		
 		configs = FXCollections.observableArrayList();
-		
-		/*
-		File folder = new File("/home/stefan/Documents/eclipse/spotter/data/5x21_2");
-		for (File f : folder.listFiles()) {
-			if (f.isDirectory()) { 
-				continue;
-			}
-			Mat m = Util.fromFile(f);
-			if (m != null) {
-				configs.add(new Config(Util.fromFile(f), this, f, prop));
-			}
-		}
-		*/
-
 		currentIndex = 0;
 		openFiles.setItems(configs);
 		
@@ -281,8 +256,6 @@ public class MainController {
 		cols.getValueFactory().setValue(prop.defaultCols);
 		size.getValueFactory().setValue(prop.defaultSize);
 		mask.setText("" + prop.defaultMask);
-		
-		// autoAll();
 		
 		scroller.prefHeightProperty().bind(anchorPane.heightProperty());
 		
@@ -339,19 +312,14 @@ public class MainController {
 			size.setDisable(true);
 			mask.setDisable(true);
 			analyzeButton.setDisable(true);
-			// autoButton.setDisable(true);
-			// removeMaskButton.setDisable(true);
 		} else {
 			rows.setDisable(false);
 			cols.setDisable(false);
 			size.setDisable(false);
 			mask.setDisable(false);
 			analyzeButton.setDisable(false);
-			// autoButton.setDisable(false);
-			// removeMaskButton.setDisable(false);
 		}
 
-		// save.selectedProperty().set(getConfig().isSaved());
 		openFiles.getSelectionModel().select(currentIndex);
 		viewFixed = oldViewFixed;
 		drawGrid();
@@ -392,15 +360,8 @@ public class MainController {
 		config.update();
 		
 		// set AnchorPane dimensions
-		// anchorPane.setMaxWidth(config.x+16);
 		anchorPane.setMinWidth(config.x+16);
-		// anchorPane.setMaxHeight(config.y+16);
 		anchorPane.setMinHeight(config.y+16);
-		
-		
-		// scroller.setMinViewportHeight(config.y+16);
-		// scroller.setMaxHeight(scroller.getMaxHeight()-156);
-		// scroller.setMinHeight(config.y+16+300);
 		
 		Mat mat = getMat(config);
 		
@@ -429,17 +390,6 @@ public class MainController {
 		double beta = (config.brightness-50)*65536/50*256/65536;
 		mat.convertTo(mat, mat.type(), alpha, beta);
 		
-		// draw guide lines
-//		Imgproc.line(mat, new Point(0, config.y_upper), new Point(mat.cols(), config.y_upper),
-//				new Scalar(0, 0, 255), 1);
-//		Imgproc.line(mat, new Point(0, config.y_lower), new Point(mat.cols(), config.y_lower),
-//				new Scalar(0, 0, 255), 1);
-//		Imgproc.line(mat, new Point(config.x_upper, 0), new Point(config.x_upper, mat.rows()),
-//				new Scalar(0, 0, 255), 1);
-//		Imgproc.line(mat, new Point(config.x_lower, 0), new Point(config.x_lower, mat.rows()),
-//				new Scalar(0, 0, 255), 1);
-		
-		
 		if (showGrid) {		
 			// draw grid
 			for (int i = 0; i < config.rows; i++) {
@@ -449,20 +399,8 @@ public class MainController {
 							new Point(config.x_lower + config.size/2 + j*config.x_dist, config.y_upper + config.size/2 + i*config.y_dist),
 							new Scalar(0, 0, 255),
 							1);
-	//				Imgproc.circle(mat,
-	//						new Point(config.x_lower + j*config.x_dist,	config.y_upper + i*config.y_dist),
-	//						config.size,
-	//						new Scalar(0, 0, 255),
-	//						1);
 				}	
 			}
-			
-	//		// draw auto indicators
-	//		for (Double d : config.autoValues) {
-	//			Imgproc.line(mat, new Point(d, 0), new Point(d, 9), new Scalar(0, 255, 255), 1);
-	//			// Imgproc.line(mat, new Point(d, mat.rows()-10), new Point(d, mat.rows()), new Scalar(0, 255, 255), 1);
-	//		}
-	
 			// label rows
 			for (int i = 0; i < config.rows; i++) {
 				Imgproc.putText(mat, "" + (char) (65 + i),
@@ -476,7 +414,6 @@ public class MainController {
 						new Point(config.x_lower - correction + i*(config.x_upper-config.x_lower)/(config.cols-1), config.y_upper - 10 - 0.5*config.size),
 						Core.FONT_ITALIC, 0.5, new Scalar(0, 0, 255));
 			}
-			
 			// draw mask crosses
 			for (int i = 0; i < config.rows; i++) {
 				for (int j = 0; j < config.cols; j++) {
@@ -495,8 +432,7 @@ public class MainController {
 				}
 			}
 		}
-			
-		// indicate masked spots
+		
 		Analysis analysis = config.getAnalysis();
 		if (analysis.analyzed) {
 			// crop image
@@ -506,8 +442,9 @@ public class MainController {
 			BufferedImage bufferedImage = new BufferedImage(mat.cols(), displaySize, BufferedImage.TYPE_3BYTE_BGR); //USHORT_555_RGB);
 	        Graphics2D graphics = (Graphics2D) bufferedImage.getGraphics();
 	        graphics.setRenderingHint(
-	                RenderingHints.KEY_TEXT_ANTIALIASING,
-	                RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+                RenderingHints.KEY_TEXT_ANTIALIASING,
+                RenderingHints.VALUE_TEXT_ANTIALIAS_ON
+	        );
 	        graphics.setColor(Color.WHITE);
 	        graphics.fillRect(0, 0, mat.cols(), displaySize);
 	        graphics.setColor(Color.BLACK);
@@ -565,7 +502,6 @@ public class MainController {
 							40 + j*30, 100 + i*60);
 				}
 			}
-	        
 	        // sd
 	        for (int j = 0; j < config.cols; j++) {
 	        	if (j % 2 == 0) {
@@ -578,62 +514,8 @@ public class MainController {
 			}
 	        
 	        mat.push_back(Util.bufferedImageToMat(bufferedImage));
-			
-			/*
-			int displaySize = 350;
-			Mat tmp = new Mat(displaySize, mat.cols(), mat.type(), new Scalar(255,255,255));
-			mat.push_back(tmp);
-			
-			for (int i = 0; i < config.cols; i++) {
-				Point p;
-				if (i % 2 == 0) {
-					p = new Point(40 + i*30, mat.rows()-displaySize+20);
-				} else {
-					p = new Point(40 + i*30, mat.rows()-displaySize+20+20);
-				}
-				Imgproc.putText(mat, "" + (1 + i),
-						p,
-						Core.FONT_ITALIC, 0.5, new Scalar(255, 0, 0));
-			}
-			
-			Imgproc.line(mat,
-					new Point(30, mat.rows()-displaySize+20+30),
-					new Point(mat.cols()-30, mat.rows()-displaySize+20+30),
-					new Scalar(255, 0, 0),
-					1);
-			Imgproc.line(mat,
-					new Point(30, mat.rows()-displaySize+20+30),
-					new Point(30, mat.rows()-30),
-					new Scalar(255, 0, 0),
-					1);
-			
-			for (int i = 0; i < config.rows; i++) {
-				Imgproc.putText(mat, "" + (char) (65 + i),
-						new Point(15, mat.rows()-displaySize+70 + i*60), Core.FONT_ITALIC, 0.45, new Scalar(255, 0, 0));
-				for (int j = 0; j < config.cols; j++) {
-					Point p;
-					if (j % 2 == 0) {
-						p = new Point(40 + j*30, mat.rows()-displaySize+70 + i*60);
-					} else {
-						p = new Point(40 + j*30, mat.rows()-displaySize+20+70 + i*60);
-					}
-					Imgproc.putText(mat, "" + (int) Math.round(analysis.getSpots()[j][i]*65535),
-							p, Core.FONT_HERSHEY_PLAIN, 1, new Scalar(255, 0, 0));
-				}
-			}
-			*/
 		}
-		
-		// print analysis values
-//		for (int i = 0; i < config.rows; i++) {
-//			for (int j = 0; j < config.cols; j+=2) {
-//				
-//			}
-//			for (int j = 1; j < config.cols; j+=2) {
-//				
-//			}
-//		}
-		
+
 		return mat;		
 	}
 	
@@ -765,11 +647,7 @@ public class MainController {
         if (configs.size() > 0) {
         	getConfig().updateControls();
         }
-        
-        // System.out.println("Index: " + currentIndex);
-        
-        // autoAll();
-        // autoDetect();
+
         updateView();
 	}
 	
@@ -793,16 +671,6 @@ public class MainController {
 		updateView();
 	}
 	
-//	@FXML
-//	protected void saveConfig() {
-//		if (save.isSelected()) {
-//			getConfig().save();
-//		}
-//		else {
-//			getConfig().unsave();
-//		}
-//	}
-	
 	@FXML
 	protected void showAbout() {
 		Alert alert = new Alert(AlertType.NONE,
@@ -820,15 +688,6 @@ public class MainController {
 	}
 	
 	@FXML
-	protected void autoDetect() {
-		// fixView();
-		// getConfig().semiAuto(0);
-		// getConfig().getAnalysis().analyzed = false;
-		// unfixView();
-		autoAll();
-	}
-	
-	@FXML
 	protected void propagateGrid() {
 		Config template = getConfig();
 		
@@ -841,192 +700,9 @@ public class MainController {
 	}
 	
 	@FXML
-	protected void autoAll() {
-//		fixView();
-//		for (Config c : configs) {
-//			if (!c.equals(getConfig())) {
-//				c.semiAuto(0);
-//			}
-//		}
-//		getConfig().semiAuto(0);
-//		unfixView();
-		fixView();
-		ArrayList<ArrayList<Double>> l = new ArrayList<>();
-		for (Config c : configs) {
-			c.cols = prop.defaultCols;
-			c.rows = prop.defaultRows;
-			try {
-				l.add(c.batchAuto());
-			} catch (Exception e) {
-				e.printStackTrace();
-				continue;
-			}
-		}
-		ArrayList<Double> all_points = new ArrayList<>();
-		ArrayList<Integer> sizes = new ArrayList<>();
-		for (Config c : configs) {
-			sizes.add(c.size);
-		}
-		double size_stride = 0.7*Util.calculateMedian(sizes);
-		for (ArrayList<Double> n : l) {
-			if (n.size() > 0) {
-				n.remove(0);
-			}
-			all_points.addAll(n);
-		}
-		all_points.add(0.0);
-		Collections.sort(all_points);
-		ArrayList<Double> centers = new ArrayList<>();
-		if (all_points.isEmpty()) {
-			System.out.println("Auto detection failed");
-			return;
-		}
-		for (int i = 0; i < 2; i++) {
-			centers.clear();
-			centers.add(0.0);
-			double offset = all_points.get(0);
-			double acc = offset;
-			System.out.println("acc=" + acc);
-			int cnt = 1;
-			for (int j = 1; j < all_points.size(); j++) {
-				if ((all_points.get(j) - offset) < size_stride) {
-					acc += all_points.get(j);
-					cnt += 1;
-				} else {
-					centers.add(acc/cnt);
-					offset = acc = all_points.get(j);
-					cnt = 1;
-					System.out.println(acc);
-				}
-			}
-			// last iteration
-			centers.add(acc/cnt);
-			System.out.println(acc);
-			
-			all_points.clear();
-			for (Double d : centers) {
-				all_points.add(d);
-			}
-		}
-		
-		// if enough data points, remove last center since it is often an artifact
-		if (centers.size() > 3) {
-			centers.remove(centers.size()-1);
-		}
-					
-		// contract centers until not more than requested
-		while (centers.size() > prop.defaultCols) {
-			// find shortest distance between centers
-			double min_distance = Double.MAX_VALUE;
-			int contraction_index = 0;
-			for (int i = 1; i < centers.size(); i++) {
-				if (centers.get(i) - centers.get(i-1) < min_distance) {
-					contraction_index = i;
-					min_distance = centers.get(i) - centers.get(i-1);
-				}
-			}
-			double new_value = (centers.get(contraction_index) + centers.get(contraction_index-1))/2;
-			centers.remove(contraction_index);
-			centers.remove(contraction_index-1);
-			centers.add(contraction_index-1, new_value);
-		}
-		
-		// now do what semiAuto does
-		if (centers.size() < 2) {
-			System.out.println("Could not determine horizontal spacing.");
-			for (Config c : configs) {
-				c.x_highValue = c.cols*(c.y_highValue-c.y_lowValue)/c.rows;
-				
-				c.updateControls();
-				c.update();
-				
-				c.getAnalysis().calculateSpots();
-				c.getAnalysis().autoMask();
-			}
-		} else if (centers.size() == 2) {
-			System.out.println("Could not determine horizontal spacing.");
-			double width = (centers.get(1)-centers.get(0));
-			for (Config c : configs) { 
-				double y_dist = (c.y_highValue-c.y_lowValue)*c.getMat().rows()/(c.rows-1);
-				int index = (int) Math.round(width/y_dist);
-				index = Math.min(c.cols-1, index-1);
-				c.x_highValue = (centers.get(0) + width/index*(c.cols-1))/c.getMat().cols();
-				
-				c.updateControls();
-				c.update();
-				
-				c.getAnalysis().calculateSpots();
-				c.getAnalysis().autoMask();
-			}
-		} else {
-			double min_loss = Double.MAX_VALUE;
-			int min_index = centers.size()-1;
-			for (int i = min_index+1; i < prop.defaultCols; i++) {
-				double dist = centers.get(centers.size()-1)/i;
-				double loss = 0.0;
-				for (Double c : centers) {
-					int col = (int) Math.round(c/dist);
-					loss += (c-col*dist)*(c-col*dist);
-				}
-				if (loss < min_loss) {
-					min_loss = loss;
-					min_index = i;
-				}
-			}
-			// System.out.println("index: " + min_index);
-			double dist = centers.get(centers.size()-1)/(min_index);
-			for (Config c : configs) {
-				c.x_highValue = ((c.x_lowValue * c.getMat().cols()) + dist*(prop.defaultCols-1))/c.getMat().cols();
-				
-				c.updateControls();
-				c.update();
-				
-				c.getAnalysis().calculateSpots();
-				c.getAnalysis().autoMask();
-				
-				ArrayList<Double> tmp = new ArrayList<>();
-				for (Double d : centers) {
-					tmp.add((c.x_lowValue * c.getMat().cols()) + d);
-				}
-				c.autoValues = tmp;
-			}
-		}
-		getConfig().updateControls();
-		
-		for (Config c : configs) {
-			c.analyzeConfig();
-		}
-		
-		unfixView();
-	}
-	
-	@FXML
 	protected void removeMask() {
 		getConfig().masked = new boolean[cols.getValue()][rows.getValue()];
 		updateView();
-	}
-	
-	@FXML
-	protected void openProjectPreferences() {
-		Stage stage = new Stage();
-	    BorderPane layout;
-		
-		try {
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(Main.class.getResource("ProjectPreferences.fxml"));
-            layout = (BorderPane) loader.load();
-            
-            Scene scene = new Scene(layout);
-            stage.setScene(scene);
-            stage.setTitle("Project preferences");
-            stage.show();
-            
-            ProjectPreferencesController controller = loader.getController();
-            controller.setParentController(this);
-            controller.reinitialize();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 	}
 	
 	@FXML
@@ -1173,7 +849,6 @@ public class MainController {
 		
 		int rowNumber = 0;
 		for (Config c : configs) {
-			// c.semiAuto(0);
 			if (!c.getAnalysis().analyzed) {
 				all_analyzed = false;
 				continue;
@@ -1217,17 +892,11 @@ public class MainController {
             	cell = r.createCell(i+1);
             	String cell_range_cond = Util.getRowRepresentation(i+1) + (rowNumber+2) +
             			":" + Util.getRowRepresentation(i+1) + (rowNumber+2+spots[0].length-1);
-            	/*
-            	String cell_range_cont = Util.getRowRepresentation(i+1) + (rowNumber-spots[0].length) +
-            			":" + Util.getRowRepresentation(i+1) + (rowNumber-1);
-            	*/
             	String formula = "SUM(";
             	for (int j = 0; j < spots[0].length; j++) {
             		String cont = Util.getRowRepresentation(i+1) + (rowNumber-spots[0].length+j);
             		String cond = Util.getRowRepresentation(i+1) + (rowNumber+2+j);
             		formula += "IF(" + cond + "=0," + cont + ",0)";
-            		//formula += Util.getRowRepresentation(i+1) + (rowNumber-spots[0].length+j)
-            		//		+ "*(1-" + Util.getRowRepresentation(i+1) + (rowNumber+2+j) + ")";
             		if (j < spots[0].length-1) {
             			formula += ",";
             		}
@@ -1284,7 +953,6 @@ public class MainController {
 		    ConditionalFormattingRule[] cfRules = {cfr1};
 		    int tmp = rowNumber - 1 - 2*(c.rows);
 		    CellRangeAddress[] regions = {CellRangeAddress.valueOf("B" + tmp + ":" + ((char)('A' + c.cols)) + (tmp - 1 + c.rows))};
-		    // System.out.println("B" + tmp + ":" + ((char)('A' + c.cols)) + (tmp - 1 + c.rows));
 		    scf1.addConditionalFormatting(regions, cfRules);
 
 			// two empty rows

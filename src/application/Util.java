@@ -35,10 +35,8 @@ public class Util {
 	// https://stackoverflow.com/a/34293310
 	public static Mat bufferedImageToMat(BufferedImage bi) {
 		  Mat mat = new Mat(bi.getHeight(), bi.getWidth(), CvType.CV_8UC3); //CV_16UC3);
-		  // short[] data = ((DataBufferUShort) bi.getRaster().getDataBuffer()).getData();
 		  byte[] data = ((DataBufferByte) bi.getRaster().getDataBuffer()).getData();
 		  mat.put(0, 0, data);
-		  // Imgproc.cvtColor(mat, mat, Imgproc.COLOR_GRAY2RGB);
 		  mat.convertTo(mat, CvType.CV_16UC3);
 		  return mat;
 	}
@@ -88,7 +86,6 @@ public class Util {
 		
 		mat.put(0, 0, new short[]{0});
 		mat.put(0, 1, new short[]{(short) (65535 / 2)});
-		// Core.normalize(mat, mat, 0, 255, Core.NORM_MINMAX);
 		Core.normalize(mat, mat, 0, 65535, Core.NORM_MINMAX);
 		mat.put(0, 0, new short[]{0});
 		mat.put(0, 1, new short[]{0});
@@ -98,11 +95,6 @@ public class Util {
 	
 	public static Mat fromPNG(File file) {
 		Mat mat = Imgcodecs.imread(file.getPath(), Imgcodecs.CV_LOAD_IMAGE_GRAYSCALE);
-		/*mat.put(0, 0, new short[]{0});
-		mat.put(0, 1, new short[]{(short) 65535});
-		Core.normalize(mat, mat, 0, 255, Core.NORM_MINMAX);
-		mat.put(0, 0, new short[]{0});
-		mat.put(0, 1, new short[]{0});*/
 		Imgproc.cvtColor(mat, mat, Imgproc.COLOR_GRAY2RGB);
 		return mat;
 	}
@@ -195,16 +187,6 @@ public class Util {
 		return Math.sqrt(calculateVariance(newValues));
 	}
 	
-	public static double[] calculateZScores(double[] values) {
-		double mean = calculateMean(values);
-		double sd = calculateSD(values);
-		double[] result = new double[values.length];
-		for (int i = 0; i < values.length; i++) {
-			result[i] = (values[i]-mean)/sd;
-		}
-		return result;
-	}
-	
 	public static boolean[] findClosest(double[] values, double cutoff) {
 		if (values.length < 3) {
 			return new boolean[]{};
@@ -233,7 +215,6 @@ public class Util {
 		selected.add(sorted.get(index+2));
 		
 		double mean = calculateMean(selected);
-		// double sd = calculateSD(selected);
 		
 		// add remaining data points if they are within cutoff standard deviations
 		double[] remaining = new double[sorted.size()-3];
@@ -244,9 +225,6 @@ public class Util {
 			}
 		}
 		for (int i = 0; i < remaining.length; i++) {
-//			if (Math.abs(remaining[i] - mean) < cutoff*sd) {
-//				selected.add(remaining[i]);
-//			}
 			if (Math.abs(remaining[i] - mean) < cutoff*mean) {
 				selected.add(remaining[i]);
 			}

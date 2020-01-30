@@ -1,16 +1,9 @@
 package application;
 
 import java.io.FileInputStream;
-// import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-// import java.io.Reader;
-// import java.util.ArrayList;
-// import java.util.Arrays;
 import java.util.Properties;
-
-// import org.apache.commons.csv.CSVFormat;
-// import org.apache.commons.csv.CSVRecord;
 
 public class Prop {
 	
@@ -20,21 +13,10 @@ public class Prop {
 	public int defaultCols;
 	public int defaultSize;
 	
-	public String typePath;
-	
-	public double autoSensitivity;
-	
 	public double fractionBrightestPixels;
 	public int minBrightestPixels;
 	
-	public int maxLevel;
-	public double[] levelSpacing;
-	
 	public double defaultMask;
-	
-	// public ArrayList<String> types;
-	// public ArrayList<Double[]> typeMeans;
-	
 	public double defaultBrightness, defaultContrast;
 	
 	public Prop() {
@@ -63,86 +45,6 @@ public class Prop {
 		System.out.println("minBrightestPixels=" + minBrightestPixels);
 		defaultMask = Double.parseDouble(prop.getProperty("defaultMask", "0.10"));
 		System.out.println("minBrightestPixels=" + minBrightestPixels);
-		
-		// options below deactivated
-		/*
-		maxLevel = Integer.parseInt(prop.getProperty("maxLevel", "3"));
-		System.out.println("maxLevel=" + maxLevel);
-		typePath = System.getProperty("user.dir") + "/" + prop.getProperty("typePath", "config/type.tsv");
-		System.out.println("typePath=" + typePath);
-		autoSensitivity = Double.parseDouble(prop.getProperty("autoSensitivity", "1.0"));
-		System.out.println("autoSensitivity=" + autoSensitivity);
-		if (prop.getProperty("levelSpacing", "null").equals("default")) {
-			calculateDefaultSpacing();
-		} else {
-			try {
-				String[] s = prop.getProperty("levelSpacing", "default").split(";");
-				levelSpacing = new double[maxLevel+2];
-				for (int i = 0; i < maxLevel+1; i++) {
-					levelSpacing[i] = Double.parseDouble(s[i]);
-				}
-				levelSpacing[maxLevel+1] = 1.0;
-			} catch (Exception e) {
-				System.out.println("Error determining custom level spacing, falling back to default.");
-				calculateDefaultSpacing();
-			}
-		}
-		System.out.println("levelSpacing=" + Arrays.toString(levelSpacing));
-		
-		readTypeFile();
-		*/
 	}
 	
-	/*
-	private int readTypeFile() {
-		System.out.println("### Loading " + typePath + " ###");
-		types = new ArrayList<>();
-		typeMeans = new ArrayList<>();
-		Reader in;
-		try {
-			in = new FileReader(typePath);
-			Iterable<CSVRecord> records = CSVFormat.TDF.parse(in);
-			for (CSVRecord record : records) {
-				types.add(record.get(0));
-				Double[] d = new Double[record.size()-1];
-				for (int i = 1; i < record.size(); i++) {
-					int l = Integer.parseInt(record.get(i));
-					d[i-1] = (levelSpacing[l] + levelSpacing[l+1])/2;
-				}
-			    typeMeans.add(d);
-			}
-		} catch (IOException e) {
-			System.out.println("Error loading type.tsv.");
-			return 1;
-		}
-		for (int i = 0; i < types.size(); i++) {
-			System.out.println(types.get(i) + ": " + Arrays.toString(typeMeans.get(i)));
-		}
-		return 0;
-	}
-	*/
-	
-	/*
-	private void calculateDefaultSpacing() {
-		levelSpacing = new double[maxLevel+2];
-		for (int i = 0; i < maxLevel+1; i++) {
-			levelSpacing[i] = 1.0*i / (maxLevel+1);
-		}
-		levelSpacing[maxLevel+1] = 1.0;
-	}
-	*/
-	
-	/*
-	public void updateTypeFile(String path) {
-		if (path != typePath) {
-			String oldPath = typePath;
-			typePath = path;
-			if (readTypeFile() != 0) {
-				System.out.println("Selected file " + typePath + " could not be read, falling back to " + oldPath + ".");
-				typePath = oldPath;
-				readTypeFile();
-			}
-		}
-	}
-	*/
 }
