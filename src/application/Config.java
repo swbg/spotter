@@ -156,6 +156,10 @@ public class Config implements Serializable {
 	
 	public int getMatValue(double x, double y) {
 		if (this.analysis.analyzed) {
+			if (y > (this.y_lower - this.y_upper) + 80) {
+				return 0;
+			}
+			
 			// correction in case image is cropped
 			y += (int) Math.round(this.y_upper-50);
 		}
