@@ -72,7 +72,7 @@ public class Analysis implements Serializable {
 				for (Short s : q) {
 					sum += s;
 				}
-				spots[j][i] = ((double) sum / (double) brightestPixels) / 65535.0;
+				spots[j][i] = ((double) sum / (double) brightestPixels) / 0.5; // (65535.0 / 2);
 				q.clear();
 			}
 		}
@@ -152,7 +152,7 @@ public class Analysis implements Serializable {
 			sb.append(config.getFileName() + sep + "sd");
 			for (int i = 0; i < spots.length; i++) {
 				sb.append(sep);
-				sb.append(sd[i] * factor);
+				sb.append(sd[i] * Math.sqrt(factor));
 			}
 			sb.append("\n");
 		}
@@ -182,7 +182,7 @@ public class Analysis implements Serializable {
 	        	}
 	        	sb.append(mean[i] * factor);
 	        	sb.append(sep);
-	        	sb.append(sd[i] * factor);
+	        	sb.append(sd[i] * Math.sqrt(factor));
 	        	sb.append("\n");
 	        }
 		}

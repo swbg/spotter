@@ -154,6 +154,20 @@ public class Config implements Serializable {
 		}
 	}
 	
+	public int getMatValue(double x, double y) {
+		if (this.analysis.analyzed) {
+			// correction in case image is cropped
+			y += (int) Math.round(this.y_upper-50);
+		}
+		
+		int x_i = (int) Math.round(x);
+		int y_i = (int) Math.round(y);
+
+		short[] tmp = new short[3];
+		mat.get(y_i, x_i, tmp);
+		return tmp[0] * 2;
+	}
+	
 	public int[] getClickedSpot(double x, double y) {
 		if (this.analysis.analyzed) {
 			// correction in case image is cropped

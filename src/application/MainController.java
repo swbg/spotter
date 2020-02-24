@@ -228,6 +228,14 @@ public class MainController {
 		}
 	}
 	
+	private class ImageMoveHandler implements EventHandler<MouseEvent> {
+
+		@Override
+		public void handle(MouseEvent event) {
+			setNotification("" + getConfig().getMatValue(event.getX(), event.getY()));
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	@FXML
 	private void initialize() {
@@ -245,6 +253,7 @@ public class MainController {
 		brightnessSlider.valueProperty().addListener(new BrightnessSliderListener());
 		contrastSlider.valueProperty().addListener(new ContrastSliderListener());
 		displayedImage.addEventHandler(MouseEvent.MOUSE_CLICKED, new ImageClickHandler());
+		displayedImage.addEventHandler(MouseEvent.MOUSE_MOVED, new ImageMoveHandler());
 		
 		prop = new Prop();
 		
@@ -384,6 +393,7 @@ public class MainController {
 	}
 	
 	private Mat getMat(Config config) {
+		int factor = 1;
 		Mat mat = config.getMat().clone();
 
 		double alpha = Math.pow(1.1, config.contrast-75);
@@ -469,10 +479,10 @@ public class MainController {
 				        graphics.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 16));
 					}
 					if (j % 2 == 0) {
-						graphics.drawString("" + (int) Math.round(analysis.getSpots()[j][i]*65535),
+						graphics.drawString("" + (int) Math.round(analysis.getSpots()[j][i]*factor),
 								40 + j*30, 80 + i*60);
 					} else {
-						graphics.drawString("" + (int) Math.round(analysis.getSpots()[j][i]*65535),
+						graphics.drawString("" + (int) Math.round(analysis.getSpots()[j][i]*factor),
 								40 + j*30, 100 + i*60);
 					}
 				}
@@ -495,20 +505,20 @@ public class MainController {
 	        // means
 	        for (int j = 0; j < config.cols; j++) {
 				if (j % 2 == 0) {
-					graphics.drawString("" + (int) Math.round(analysis.getMean()[j]*65535),
+					graphics.drawString("" + (int) Math.round(analysis.getMean()[j]*factor),
 							40 + j*30, 80 + i*60);
 				} else {
-					graphics.drawString("" + (int) Math.round(analysis.getMean()[j]*65535),
+					graphics.drawString("" + (int) Math.round(analysis.getMean()[j]*factor),
 							40 + j*30, 100 + i*60);
 				}
 			}
 	        // sd
 	        for (int j = 0; j < config.cols; j++) {
 	        	if (j % 2 == 0) {
-					graphics.drawString("" + (int) Math.round(analysis.getSd()[j]*65535),
+					graphics.drawString("" + (int) Math.round(analysis.getSd()[j]*factor),
 							40 + j*30, 80 + (i+1)*60);
 				} else {
-					graphics.drawString("" + (int) Math.round(analysis.getSd()[j]*65535),
+					graphics.drawString("" + (int) Math.round(analysis.getSd()[j]*factor),
 							40 + j*30, 100 + (i+1)*60);
 				}
 			}
@@ -810,6 +820,8 @@ public class MainController {
 	
 	@FXML
 	protected void exportExcel() {
+		int factor = 1;
+		
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setInitialDirectory(lastDirectory);
 		fileChooser.setInitialFileName("analysis.xls");
@@ -873,7 +885,7 @@ public class MainController {
 	            
 	        	for (int j = 0; j < spots.length; j++) {
 	        		cell = r.createCell(j+1);
-		            cell.setCellValue((int) Math.round(spots[j][i]*65535));
+		            cell.setCellValue((int) Math.round(spots[j][i]*factor));
 		            if (masked[j][i]) {
 		            	cell.setCellStyle(boldRedStyle);
 		            }

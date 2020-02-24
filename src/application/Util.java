@@ -86,8 +86,7 @@ public class Util {
 		
 		mat.put(0, 0, new short[]{0});
 		mat.put(0, 1, new short[]{(short) (65535 / 2)});
-		Core.normalize(mat, mat, 0, 65535, Core.NORM_MINMAX);
-		mat.put(0, 0, new short[]{0});
+		Core.normalize(mat, mat, 0, 65535 / 2, Core.NORM_MINMAX);
 		mat.put(0, 1, new short[]{0});
 		Imgproc.cvtColor(mat, mat, Imgproc.COLOR_GRAY2RGB);
 		return mat;
